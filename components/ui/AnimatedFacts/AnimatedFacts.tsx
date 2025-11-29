@@ -39,8 +39,10 @@ export const AnimatedFacts = ({
         }
     }, [autoplay]);
 
-    const randomRotateY = () => {
-        return Math.floor(Math.random() * 21) - 10;
+    // Use deterministic rotation based on index to avoid hydration mismatch
+    const getRotation = (index: number) => {
+        const rotations = [-8, 6, -4, 10, -6, 8, -10, 4];
+        return rotations[index % rotations.length];
     };
 
     return (
@@ -56,13 +58,13 @@ export const AnimatedFacts = ({
                                         opacity: 0,
                                         scale: 0.9,
                                         z: -100,
-                                        rotate: randomRotateY(),
+                                        rotate: getRotation(index),
                                     }}
                                     animate={{
                                         opacity: isActive(index) ? 1 : 0.7,
                                         scale: isActive(index) ? 1 : 0.95,
                                         z: isActive(index) ? 0 : -100,
-                                        rotate: isActive(index) ? 0 : randomRotateY(),
+                                        rotate: isActive(index) ? 0 : getRotation(index),
                                         zIndex: isActive(index)
                                             ? 40
                                             : facts.length + 2 - index,
@@ -72,7 +74,7 @@ export const AnimatedFacts = ({
                                         opacity: 0,
                                         scale: 0.9,
                                         z: 100,
-                                        rotate: randomRotateY(),
+                                        rotate: getRotation(index),
                                     }}
                                     transition={{
                                         duration: 0.4,

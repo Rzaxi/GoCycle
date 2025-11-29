@@ -107,32 +107,30 @@ export default function Edukasi() {
     return (
         <div className="min-h-screen font-sans bg-gray-50">
 
-            {/* 1. HERO SECTION: Sticky Parallax */}
+            {/* 1. HERO SECTION: Environmental Problem Statement */}
             <div className="relative h-[90vh] flex items-center justify-center overflow-hidden sticky top-0 z-0">
                 <div className="absolute inset-0 z-0">
                     <img
                         src="/foto/edukasi_hero.jpg"
-                        alt="Edukasi Lingkungan"
+                        alt="Masalah Sampah Lingkungan"
                         className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"></div>
                 </div>
 
-                <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-24">
+                <div className="relative z-10 text-center px-4 max-w-5xl mx-auto -mt-16">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="inline-block py-2 px-4 rounded-full bg-emerald-600/40 border border-emerald-400/60 text-white text-sm font-bold mb-8 backdrop-blur-md tracking-wider shadow-lg">
-                            🌱 EDUKASI LINGKUNGAN
-                        </span>
-                        <h1 className="text-5xl md:text-7xl font-black text-white mb-8 leading-tight tracking-tight drop-shadow-2xl">
-                            Perjalanan Sampah Kita
+                        <h1 className="text-5xl md:text-7xl font-black text-white mb-7 leading-tight tracking-tight drop-shadow-2xl">
+                            Sampah Kita, <br />
+                            <span className="text-red-400">Masa Depan Bumi</span>
                         </h1>
                         <p className="text-lg md:text-xl text-white leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-lg">
-                            Bagaimana sampah yang kita buang berakhir? <br />
-                            Mari telusuri perjalanannya.
+                            Setiap hari, jutaan ton sampah mencemari lingkungan kita. <br />
+                            Saatnya kita memahami dampaknya dan mulai bertindak.
                         </p>
                     </motion.div>
                 </div>
@@ -142,37 +140,43 @@ export default function Edukasi() {
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                 >
-                    <span className="text-xs uppercase tracking-widest drop-shadow">Scroll untuk Mulai</span>
+                    <span className="text-xs uppercase tracking-widest drop-shadow">Scroll untuk Lebih Lanjut</span>
                     <IconArrowRight className="rotate-90" />
                 </motion.div>
             </div>
 
-            {/* 2. PROBLEM AWARENESS: Animated Facts Slider */}
+            {/* 2. PROBLEM AWARENESS: The Harsh Reality */}
             <div className="bg-white relative z-10 rounded-t-[60px] shadow-[0_-20px_50px_rgba(0,0,0,0.2)] pt-10 pb-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-0 pt-10">
-                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Fakta Yang Menghantui</h2>
-                        <p className="text-gray-500 text-lg max-w-2xl mx-auto">Data ini bukan sekadar angka statistik, tapi peringatan nyata tentang kondisi lingkungan tempat tinggal kita saat ini.</p>
+                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Realita Yang Memprihatinkan</h2>
+                        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+                            Angka-angka ini bukan sekadar statistik. Ini adalah cerminan krisis lingkungan yang sedang kita hadapi bersama.
+                        </p>
                     </div>
                     <AnimatedFacts facts={factsData} autoplay={true} />
                 </div>
             </div>
 
-            {/* 3. TIMELINE: Waste Journey */}
+            {/* 3. TIMELINE: Understanding The Journey */}
             <div className="bg-white relative z-10">
                 <Timeline data={timelineData} />
             </div>
 
-            {/* 4. TRANSITION: The Hope */}
+            {/* 4. TRANSITION: The Solution & Call to Action */}
             <div className="bg-[#2E8B57] py-32 relative overflow-hidden z-10">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                     <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
                 </div>
                 <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-                    <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Tapi Masih Ada Harapan.</h2>
-                    <p className="text-xl md:text-2xl text-green-100 mb-12 leading-relaxed font-light">
-                        Perubahan besar dimulai dari langkah kecil di rumah kita sendiri. <br />
-                        Mari belajar cara menjadi bagian dari <span className="font-bold text-white border-b-2 border-white/30 pb-1">solusi</span>, bukan polusi.
+                    <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Yuk, Mulai Dari Kita!</h2>
+                    <p className="text-xl md:text-2xl text-green-100 mb-6 leading-relaxed font-light">
+                        Dengan memilah dan mendaur ulang sampah, kita bisa mengurangi pencemaran lingkungan. <br />
+                        Setiap aksi kecil, seperti memisahkan sampah organik dan plastik, <br />
+                        adalah langkah nyata menuju <span className="font-bold text-white border-b-2 border-white/30 pb-1">bumi yang lebih bersih</span>.
+                    </p>
+                    <p className="text-lg md:text-xl text-white font-semibold">
+                        Mari bersama-sama menjadi bagian dari solusi, bukan masalah!
                     </p>
                 </div>
             </div>
