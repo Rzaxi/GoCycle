@@ -8,8 +8,8 @@ import {
     IconStar,
     IconArrowRight,
     IconTag,
-    IconAdjustmentsHorizontal,
-    IconFilter
+    IconFilter,
+    IconHeart
 } from "@tabler/icons-react";
 
 // Extended product data with specific categories
@@ -105,9 +105,9 @@ const allProducts = [
 ];
 
 const tabs = [
-    { id: "Limbah Domestik", label: "LIMBAH DOMESTIK" },
-    { id: "DIY Product", label: "DIY PRODUCT" },
-    { id: "Diskon", label: "DISKON" },
+    { id: "Limbah Domestik", label: "Limbah Domestik" },
+    { id: "DIY Product", label: "DIY Product" },
+    { id: "Diskon", label: "Lagi Diskon" },
 ];
 
 const sortOptions = [
@@ -121,7 +121,6 @@ export default function Marketplace() {
     const [activeTab, setActiveTab] = useState("Limbah Domestik");
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("popular");
-    const [hoveredId, setHoveredId] = useState<number | null>(null);
 
     // Filter and sort products
     const filteredProducts = allProducts
@@ -159,139 +158,133 @@ export default function Marketplace() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="min-h-screen bg-gray-50 font-sans pb-20">
+            {/* 1. HERO SECTION - Modern & Clean */}
+            <div className="relative bg-gradient-to-r from-emerald-600 to-teal-600 pt-32 pb-20 px-6 overflow-hidden">
+                {/* Abstract Background Shapes */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-black/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
 
-                {/* Hero Banner */}
-                <div className="bg-[#86C89C] rounded-[30px] p-8 md:p-12 relative overflow-hidden mb-12 flex flex-col md:flex-row items-center justify-between min-h-[400px]">
-                    {/* Decorative Background Shapes */}
-                    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                        <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#74B78D] rounded-full opacity-50 blur-3xl"></div>
-                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#5FA87B] rounded-full opacity-30 blur-3xl"></div>
-                    </div>
-
-                    {/* Left Content */}
-                    <div className="relative z-10 max-w-xl text-left mb-8 md:mb-0">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-4 tracking-tight">
-                            pilihan belanja yang<br />
-                            lebih cerdas dan<br />
-                            berkelanjutan.
-                        </h1>
-                        <p className="text-black/80 text-lg mb-8 max-w-md font-medium">
-                            Marketplace ramah lingkungan untuk pilihan belanja yang lebih cerdas dan berkelanjutan.
-                        </p>
-                        <button className="bg-[#2E8B57] text-white px-8 py-3 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-[#246e45] transition-colors shadow-lg">
-                            Belanja Sekarang
-                        </button>
-                    </div>
-
-                    {/* Right Featured Product Card */}
-                    <div className="relative z-10 w-full md:w-auto">
-                        <div className="bg-white/20 backdrop-blur-md border border-white/30 p-4 rounded-3xl shadow-xl max-w-sm mx-auto md:mr-0 relative group">
-                            {/* Floating Badge */}
-                            <div className="absolute -top-6 -right-6 w-16 h-16 bg-[#C04A28] rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg z-20 border-4 border-white">
-                                a
+                <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div className="text-white max-w-2xl">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium mb-6">
+                                🌱 Marketplace Ramah Lingkungan
+                            </span>
+                            <h1 className="text-5xl md:text-6xl font-black leading-tight mb-6 tracking-tight">
+                                Belanja Cerdas,<br />
+                                <span className="text-emerald-200">Bumi Bernapas.</span>
+                            </h1>
+                            <p className="text-lg text-emerald-50 mb-8 max-w-lg leading-relaxed">
+                                Temukan produk daur ulang berkualitas atau jual limbah domestikmu. Langkah kecil untuk dampak besar.
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <button className="bg-white text-emerald-700 px-8 py-3.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                    Mulai Belanja
+                                </button>
+                                <button className="bg-transparent border-2 border-white/30 text-white px-8 py-3.5 rounded-full font-bold hover:bg-white/10 transition-all duration-300">
+                                    Jual Sampah
+                                </button>
                             </div>
+                        </motion.div>
+                    </div>
 
-                            <div className="relative rounded-2xl overflow-hidden mb-4 aspect-square">
+                    {/* Featured Card - Glassmorphism */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="hidden md:block relative z-10"
+                    >
+                        <div className="relative w-80 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-3xl shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                            <div className="absolute -top-4 -right-4 bg-orange-500 text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl shadow-lg z-20 rotate-12">
+                                50%
+                            </div>
+                            <div className="rounded-2xl overflow-hidden mb-4 aspect-square shadow-inner">
                                 <img
-                                    src="https://img.freepik.com/free-photo/tire-chair-garden_1098-18572.jpg"
-                                    alt="Featured"
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800"
+                                    alt="Featured Product"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                             <div className="text-white">
-                                <h3 className="font-bold text-xl mb-1">SOFA BAN BEKAS</h3>
-                                <p className="text-white/80 text-xs mb-3">Kursi santai dari ban bekas</p>
-                                <div className="flex items-center justify-between bg-black/20 rounded-xl p-3 backdrop-blur-sm">
-                                    <div className="flex items-center gap-1 text-yellow-300">
-                                        <IconStar size={16} fill="currentColor" />
-                                        <span className="font-bold text-sm">4.7+</span>
+                                <h3 className="font-bold text-lg mb-1">Meja Kayu Palet</h3>
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <p className="text-white/60 text-xs line-through">Rp 240.000</p>
+                                        <p className="font-bold text-xl">Rp 120.000</p>
                                     </div>
-                                    <div className="font-bold">Rp 23.000</div>
-                                    <div className="text-xs opacity-80">20 Stok</div>
+                                    <div className="bg-white/20 p-2 rounded-full">
+                                        <IconArrowRight size={20} />
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+                {/* 2. FILTERS & SEARCH - Floating Bar */}
+                <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-12 border border-gray-100">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+                        {/* Tabs */}
+                        <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 scrollbar-hide">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${activeTab === tab.id
+                                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-200"
+                                        : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                        }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Search & Sort */}
+                        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                            <div className="relative flex-1 sm:w-72">
+                                <IconSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Cari produk ramah lingkungan..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-50 border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all"
+                                />
+                            </div>
+                            <div className="relative">
+                                <IconFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="w-full sm:w-auto pl-12 pr-10 py-3 rounded-full bg-gray-50 border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm appearance-none cursor-pointer font-medium text-gray-700"
+                                >
+                                    {sortOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Controls Section: Tabs, Search, Sort */}
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
-                    {/* Tab Navigation */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide w-full lg:w-auto">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-all border-2 ${activeTab === tab.id
-                                    ? "bg-[#2E8B57] text-white border-[#2E8B57] shadow-md"
-                                    : "bg-white text-gray-500 border-gray-200 hover:border-[#2E8B57] hover:text-[#2E8B57]"
-                                    }`}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Search & Sort */}
-                    <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                        <div className="relative flex-1 sm:w-64">
-                            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                type="text"
-                                placeholder="Cari produk..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 focus:border-[#2E8B57] focus:ring-2 focus:ring-[#2E8B57]/20 outline-none text-sm transition-all"
-                            />
-                        </div>
-                        <div className="relative">
-                            <IconAdjustmentsHorizontal className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="w-full sm:w-auto pl-10 pr-8 py-2.5 rounded-full border border-gray-200 bg-white focus:border-[#2E8B57] focus:ring-2 focus:ring-[#2E8B57]/20 outline-none text-sm appearance-none cursor-pointer"
-                            >
-                                {sortOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Product Grid */}
+                {/* 3. PRODUCT GRID - Clean Cards */}
                 <motion.div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    {/* Special Offer / Banner in Grid */}
-                    {activeTab === "Diskon" && (
-                        <motion.div
-                            variants={itemVariants}
-                            className="col-span-1 sm:col-span-2 row-span-2 bg-black rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl"
-                        >
-                            <div className="relative z-10">
-                                <div className="bg-white text-black font-black text-xl px-4 py-1 inline-block mb-4 transform -rotate-2">
-                                    50% OFF
-                                </div>
-                                <h3 className="text-white text-4xl font-black leading-none mb-4">
-                                    SPECIAL<br />OFFER
-                                </h3>
-                                <p className="text-gray-400 text-sm max-w-[200px]">
-                                    Dapatkan diskon spesial untuk produk daur ulang pilihan minggu ini.
-                                </p>
-                            </div>
-                            <div className="absolute right-0 bottom-0 w-48 h-48 bg-gradient-to-tl from-[#2E8B57] to-transparent opacity-50 rounded-tl-full"></div>
-                            <IconTag className="absolute top-4 right-4 text-white/10 w-32 h-32 transform rotate-12" />
-                        </motion.div>
-                    )}
-
                     <AnimatePresence mode="popLayout">
                         {filteredProducts.map((product) => (
                             <motion.div
@@ -301,47 +294,63 @@ export default function Marketplace() {
                                 initial="hidden"
                                 animate="visible"
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                onHoverStart={() => setHoveredId(product.id)}
-                                onHoverEnd={() => setHoveredId(null)}
-                                className="bg-white rounded-3xl overflow-hidden relative group aspect-[4/5] shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+                                className="group bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col"
                             >
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
+                                {/* Image Container */}
+                                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                    />
 
-                                {/* Overlay on Hover */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                                    <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="bg-[#2E8B57] text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                                                {product.category}
+                                    {/* Badges */}
+                                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                                        {product.discount > 0 && (
+                                            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
+                                                -{product.discount}%
+                                            </span>
+                                        )}
+                                        <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm uppercase tracking-wide">
+                                            {product.category}
+                                        </span>
+                                    </div>
+
+                                    {/* Action Button (Visible on Hover) */}
+                                    <button className="absolute bottom-3 right-3 bg-white text-emerald-600 p-2.5 rounded-full shadow-lg translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hover:bg-emerald-600 hover:text-white">
+                                        <IconShoppingCart size={20} />
+                                    </button>
+                                </div>
+
+                                {/* Content */}
+                                <div className="p-5 flex flex-col flex-grow">
+                                    <div className="mb-1 flex items-center gap-1">
+                                        <IconStar size={14} className="text-yellow-400 fill-yellow-400" />
+                                        <span className="text-xs font-bold text-gray-500">{product.rating}</span>
+                                        <span className="text-xs text-gray-300">•</span>
+                                        <span className="text-xs text-gray-400 truncate">{product.seller}</span>
+                                    </div>
+
+                                    <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-1 group-hover:text-emerald-600 transition-colors">
+                                        {product.name}
+                                    </h3>
+
+                                    <div className="mt-auto flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            {product.discount > 0 && (
+                                                <span className="text-xs text-gray-400 line-through">
+                                                    Rp {product.price.toLocaleString("id-ID")}
+                                                </span>
+                                            )}
+                                            <span className="text-lg font-black text-emerald-600">
+                                                Rp {(product.price * (100 - product.discount) / 100).toLocaleString("id-ID")}
                                             </span>
                                         </div>
-                                        <h3 className="text-white font-bold text-lg leading-tight mb-1">{product.name}</h3>
-                                        <p className="text-gray-300 text-xs mb-3">by {product.seller}</p>
-                                        <div className="flex items-center justify-between mt-4">
-                                            <div>
-                                                <span className="text-white font-bold text-xl block">Rp {product.price.toLocaleString("id-ID")}</span>
-                                                <div className="flex items-center gap-1 text-yellow-400 text-xs mt-1">
-                                                    <IconStar size={12} fill="currentColor" />
-                                                    <span>{product.rating}</span>
-                                                </div>
-                                            </div>
-                                            <button className="bg-white text-[#2E8B57] p-3 rounded-full hover:bg-gray-100 transition-colors shadow-lg transform hover:scale-110">
-                                                <IconShoppingCart size={20} />
-                                            </button>
+                                        <div className="text-xs text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-md">
+                                            Stok: {product.stock}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Discount Badge */}
-                                {product.discount > 0 && (
-                                    <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-                                        {product.discount}% OFF
-                                    </div>
-                                )}
                             </motion.div>
                         ))}
                     </AnimatePresence>
@@ -349,8 +358,8 @@ export default function Marketplace() {
 
                 {/* Empty State */}
                 {filteredProducts.length === 0 && (
-                    <div className="text-center py-20">
-                        <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                        <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                             <IconSearch size={32} className="text-gray-400" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Produk tidak ditemukan</h3>
