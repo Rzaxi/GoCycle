@@ -36,8 +36,8 @@ const teamMembers = [
 export default function TentangKami() {
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
-            {/* 1. HERO SECTION WITH GRID BACKGROUND */}
-            <GridBackground className="h-[50rem]" containerClassName="h-auto min-h-[60vh] flex items-center justify-center py-32">
+            {/* 1. HERO SECTION WITH GRID BACKGROUND - FORCED WHITE */}
+            <GridBackground className="h-[50rem]" containerClassName="h-auto min-h-[60vh] flex items-center justify-center py-32 bg-white">
                 <div className="relative max-w-4xl mx-auto px-4 text-center z-10">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -155,15 +155,15 @@ export default function TentangKami() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <span className="text-emerald-600 font-bold tracking-wider text-sm uppercase mb-3 block">Tim Hebat Kami</span>
-                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">Meet The Team</h2>
+                            <span className="text-emerald-600 font-bold tracking-wider text-sm uppercase mb-3 block">Orang-Orang Hebat</span>
+                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">The Visionaries</h2>
                             <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
-                                Di balik teknologi canggih, ada manusia-manusia yang bekerja dengan hati untuk bumi yang lebih baik.
+                                Bukan sekadar tim, tapi keluarga yang berdedikasi untuk satu tujuan: Bumi yang lebih hijau.
                             </p>
                         </motion.div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-8">
+                    <div className="flex flex-wrap items-center justify-center gap-10">
                         {teamMembers.map((member, index) => (
                             <motion.div
                                 key={member.id}
@@ -171,44 +171,40 @@ export default function TentangKami() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="w-[20rem]"
+                                className="group relative"
                             >
                                 <PinContainer title={member.linkTitle} href={member.link}>
-                                    <div className="w-[20rem]">
-                                        {/* Clean Modern Card */}
-                                        <div className="relative bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 group hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition-all duration-500">
+                                    <div className="flex flex-col h-[28rem] w-[22rem] bg-white rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 relative z-10 group-hover:shadow-[0_30px_80px_rgba(16,185,129,0.15)] transition-all duration-500">
 
-                                            {/* Image */}
-                                            <div className="aspect-[4/5] overflow-hidden bg-gray-100">
-                                                <img
-                                                    src={member.image}
-                                                    alt={member.name}
-                                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                                                />
-                                            </div>
+                                        {/* Image Section with Modern Overlay */}
+                                        <div className="relative h-full w-full overflow-hidden">
+                                            <img
+                                                src={member.image}
+                                                alt={member.name}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                            />
 
-                                            {/* Content */}
-                                            <div className="p-6">
-                                                {/* Name & Role */}
-                                                <h3 className="font-bold text-2xl text-gray-900 mb-1 tracking-tight">
-                                                    {member.name}
-                                                </h3>
-                                                <p className="text-sm text-gray-500 font-medium mb-4">
-                                                    {member.role}
+                                            {/* Modern Glass Overlay at Bottom */}
+                                            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-90"></div>
+
+                                            {/* Content Overlay */}
+                                            <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 px-3 py-1 rounded-full">
+                                                        <span className="text-emerald-300 text-xs font-bold tracking-wider uppercase">{member.role}</span>
+                                                    </div>
+                                                    <div className="w-10 h-10 rounded-full bg-white text-slate-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 hover:bg-emerald-500 hover:text-white cursor-pointer shadow-lg transform translate-y-4 group-hover:translate-y-0">
+                                                        <IconBrandLinkedin size={20} />
+                                                    </div>
+                                                </div>
+
+                                                <h3 className="text-3xl font-black text-white mb-2 tracking-tight">{member.name}</h3>
+                                                <div className="h-1 w-12 bg-emerald-500 rounded-full mb-4 group-hover:w-full transition-all duration-700"></div>
+
+                                                <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2">
+                                                    Passionate about creating sustainable solutions for a better tomorrow.
                                                 </p>
-
-                                                {/* Divider */}
-                                                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-4"></div>
-
-                                                {/* Connect Button */}
-                                                <button className="w-full bg-gray-900 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 group/btn">
-                                                    <IconBrandLinkedin size={18} className="group-hover/btn:scale-110 transition-transform" />
-                                                    <span>Connect</span>
-                                                </button>
                                             </div>
-
-                                            {/* Subtle Accent */}
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                         </div>
                                     </div>
                                 </PinContainer>

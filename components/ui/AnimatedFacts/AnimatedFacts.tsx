@@ -113,13 +113,13 @@ export const AnimatedFacts = ({
                             ease: "easeInOut",
                         }}
                     >
-                        <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-2">
+                        <h3 className="text-4xl font-black text-gray-900 mb-2">
                             {facts[active].name}
                         </h3>
-                        <p className="text-xl font-bold text-[#2E8B57] dark:text-neutral-500 mb-6">
+                        <p className="text-xl font-bold text-[#2E8B57] mb-6">
                             {facts[active].designation}
                         </p>
-                        <motion.p className="text-lg text-gray-600 dark:text-neutral-300 leading-relaxed">
+                        <motion.p className="text-lg text-gray-600 leading-relaxed">
                             {facts[active].quote.split(" ").map((word, index) => (
                                 <motion.span
                                     key={index}

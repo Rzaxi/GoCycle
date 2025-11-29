@@ -32,7 +32,7 @@ const timelineData = [
         title: "Pemilahan",
         content: (
             <div>
-                <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+                <p className="text-neutral-800 text-xs md:text-sm font-normal mb-8">
                     Langkah pertama dimulai dari rumah. Memisahkan sampah organik, anorganik, dan residu adalah kunci utama dalam rantai daur ulang.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
@@ -54,7 +54,7 @@ const timelineData = [
         title: "Pengumpulan",
         content: (
             <div>
-                <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+                <p className="text-neutral-800 text-xs md:text-sm font-normal mb-8">
                     Sampah yang terpilah dikumpulkan oleh petugas kebersihan atau bank sampah. Di sini, nilai ekonomi sampah mulai terlihat.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
@@ -71,7 +71,7 @@ const timelineData = [
         title: "Pengolahan",
         content: (
             <div>
-                <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+                <p className="text-neutral-800 text-xs md:text-sm font-normal mb-8">
                     Sampah diolah menjadi bahan baku baru. Plastik dicacah menjadi bijih plastik, kertas didaur ulang menjadi bubur kertas.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
@@ -88,7 +88,7 @@ const timelineData = [
         title: "Produk Baru",
         content: (
             <div>
-                <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+                <p className="text-neutral-800 text-xs md:text-sm font-normal mb-8">
                     Hasil daur ulang lahir kembali menjadi produk baru yang bermanfaat, menutup siklus ekonomi sirkular.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
@@ -164,10 +164,10 @@ export default function Edukasi() {
             </div>
 
             {/* 4. TRANSITION - CLEAN & SIMPLE */}
-            <div className="relative py-24 bg-gradient-to-b from-emerald-500 to-emerald-600">
+            <div className="relative pt-10 pb-24 bg-gradient-to-b from-emerald-500 to-emerald-600">
                 <div className="absolute inset-0 bg-black/5"></div>
 
-                <div className="relative max-w-4xl mx-auto px-6 text-center">
+                <div className="relative max-w-4xl mx-auto px-6 text-center w-full">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
