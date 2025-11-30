@@ -8,6 +8,7 @@ const Navbar = () => {
     const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -95,13 +96,63 @@ const Navbar = () => {
 
                     {/* Mobile Menu Button (Hamburger) */}
                     <div className="md:hidden flex items-center">
-                        <button className="text-gray-600 hover:text-[#2E8B57] focus:outline-none">
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-gray-600 hover:text-[#2E8B57] focus:outline-none z-50 relative"
+                            aria-label="Toggle menu"
+                        >
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                {isMobileMenuOpen ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                )}
                             </svg>
                         </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu Dropdown */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+                        <div className="flex flex-col space-y-2">
+                            {navLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                return (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className={`
+                                            px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                            ${isActive
+                                                ? 'text-[#2E8B57] bg-green-50 font-bold'
+                                                : 'text-gray-600 hover:text-[#2E8B57] hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                );
+                            })}
+                            <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
+                                <Link
+                                    href="/login"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-gray-600 hover:text-[#2E8B57] font-medium text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                                >
+                                    Masuk
+                                </Link>
+                                <Link
+                                    href="/register"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="bg-[#2E8B57] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#246e45] shadow-lg hover:shadow-green-200 transition-all text-center"
+                                >
+                                    Daftar
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </nav>
         </div>
     );
