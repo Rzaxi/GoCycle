@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -112,47 +113,67 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                {/* Mobile Menu Dropdown */}
-                {isMobileMenuOpen && (
-                    <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
-                        <div className="flex flex-col space-y-2">
-                            {navLinks.map((link) => {
-                                const isActive = pathname === link.href;
-                                return (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className={`
-                                            px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                                            ${isActive
-                                                ? 'text-[#2E8B57] bg-green-50 font-bold'
-                                                : 'text-gray-600 hover:text-[#2E8B57] hover:bg-gray-50'}
-                                        `}
-                                    >
-                                        {link.name}
-                                    </Link>
-                                );
-                            })}
-                            <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
-                                <Link
-                                    href="/login"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-gray-600 hover:text-[#2E8B57] font-medium text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-center"
-                                >
-                                    Masuk
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="bg-[#2E8B57] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#246e45] shadow-lg hover:shadow-green-200 transition-all text-center"
-                                >
-                                    Daftar
-                                </Link>
+                {/* Mobile Menu Overlay - Modern & Full Screen */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute top-full left-0 right-0 mt-4 p-4 md:hidden"
+                        >
+                            <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/20 overflow-hidden p-6">
+                                <div className="flex flex-col space-y-4">
+                                    {navLinks.map((link, index) => {
+                                        const isActive = pathname === link.href;
+                                        return (
+                                            <motion.div
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: index * 0.1 }}
+                                                key={link.name}
+                                            >
+                                                <Link
+                                                    href={link.href}
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                    className={`
+                                                        block px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-200 flex items-center justify-between group
+                                                        ${isActive
+                                                            ? 'text-white bg-[#2E8B57] shadow-lg shadow-emerald-500/30'
+                                                            : 'text-gray-600 hover:bg-gray-50 hover:text-[#2E8B57]'}
+                                                    `}
+                                                >
+                                                    <span>{link.name}</span>
+                                                    {isActive && <div className="w-2 h-2 bg-white rounded-full animate-pulse" />}
+                                                </Link>
+                                            </motion.div>
+                                        );
+                                    })}
+
+                                    <div className="h-px bg-gray-100 my-2" />
+
+                                    <div className="grid grid-cols-2 gap-4 pt-2">
+                                        <Link
+                                            href="/login"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="flex items-center justify-center px-6 py-4 rounded-2xl text-gray-700 font-bold bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
+                                        >
+                                            Masuk
+                                        </Link>
+                                        <Link
+                                            href="/register"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="flex items-center justify-center px-6 py-4 rounded-2xl text-white font-bold bg-[#2E8B57] hover:bg-[#246e45] shadow-lg shadow-emerald-500/30 transition-all"
+                                        >
+                                            Daftar
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
         </div>
     );
