@@ -85,12 +85,12 @@ const Navbar = () => {
 
                     {/* Auth Buttons */}
                     <div className="hidden md:flex items-center space-x-3">
-                        <button className="text-gray-600 hover:text-[#2E8B57] font-medium text-sm px-3 py-2 rounded-full transition-colors">
+                        <Link href="/login" className="text-gray-600 hover:text-[#2E8B57] font-medium text-sm px-3 py-2 rounded-full transition-colors">
                             Masuk
-                        </button>
-                        <button className="bg-[#2E8B57] text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-[#246e45] shadow-lg hover:shadow-green-200 transition-all transform hover:-translate-y-0.5">
+                        </Link>
+                        <Link href="/register" className="bg-[#2E8B57] text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-[#246e45] shadow-lg hover:shadow-green-200 transition-all transform hover:-translate-y-0.5">
                             Daftar
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Button (Hamburger) */}
