@@ -43,7 +43,7 @@ export default function ScrollFeatures() {
     const clipPath = useTransform(
         scrollYProgress,
         [0, 0.9], // Finish expanding slightly before the end
-        ["inset(20% 0 0 0 round 24px)", "inset(0% 0 0 0 round 24px)"]
+        ["inset(25% 0 0 0 round 24px)", "inset(0% 0 0 0 round 24px)"]
     );
 
     // Text opacity: wait until image is fully expanded (0.9 -> 1)
