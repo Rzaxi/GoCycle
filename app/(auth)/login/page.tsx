@@ -1,7 +1,13 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Mail, Lock, Leaf, ArrowLeft } from "lucide-react";
+import { ArrowRight, Mail, Lock, Leaf, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const isRegistered = searchParams.get("registered") === "true";
+
   return (
     <div className="min-h-screen flex bg-white relative overflow-hidden">
       
@@ -92,6 +98,16 @@ export default function LoginPage() {
           </div>
 
           <form className="space-y-6">
+            {/* Success Message */}
+            {isRegistered && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3">
+                <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-green-700 text-sm font-medium">
+                  Akun berhasil dibuat! Silakan masuk dengan akun baru Anda.
+                </span>
+              </div>
+            )}
+
             <div className="space-y-5">
               {/* Email Input */}
               <div>
