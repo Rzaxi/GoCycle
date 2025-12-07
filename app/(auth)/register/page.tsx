@@ -1,7 +1,92 @@
+"use client";
+
+import { useState, FormEvent } from "react";
 import Link from "next/link";
-import { ArrowRight, Mail, Lock, User, Leaf, CheckCircle, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Mail, Lock, User, Leaf, CheckCircle, ArrowLeft, Loader2, Eye, EyeOff, ChevronDown, ShoppingBag, Store } from "lucide-react";
+import { registerUser } from "@/lib/api";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    accountType: "",
+  });
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError(null);
+  };
+
+  const handleAccountTypeSelect = (type: string) => {
+    setFormData((prev) => ({ ...prev, accountType: type }));
+    setIsDropdownOpen(false);
+    setError(null);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    // Client-side validation
+    if (formData.fullName.trim().length < 3) {
+      setError("Nama lengkap minimal 3 karakter");
+      return;
+    }
+
+    if (!formData.email.includes("@")) {
+      setError("Format email tidak valid");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password minimal 8 karakter");
+      return;
+    }
+
+    if (formData.password !== formData.passwordConfirm) {
+      setError("Konfirmasi password tidak cocok");
+      return;
+    }
+
+    if (!formData.accountType) {
+      setError("Silakan pilih tipe akun");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setError("Anda harus menyetujui Syarat & Ketentuan");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await registerUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        passwordConfirm: formData.passwordConfirm,
+        accountType: formData.accountType as "Pembeli" | "Penjual",
+      });
+      router.push("/login?registered=true");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex bg-white relative overflow-hidden">
       
@@ -87,7 +172,14 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm font-medium">
+                {error}
+              </div>
+            )}
+
             {/* Full Name */}
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Nama Lengkap</label>
@@ -97,8 +189,12 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
                   placeholder="Nama lengkap kamu"
-                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium"
+                  disabled={isLoading}
+                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -112,8 +208,12 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="nama@email.com"
-                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium"
+                  disabled={isLoading}
+                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -126,10 +226,123 @@ export default function RegisterPage() {
                   <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-[#2E8B57] transition-colors" />
                 </div>
                 <input
-                  type="password"
-                  placeholder="Buat password kuat"
-                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Buat password kuat (min. 8 karakter)"
+                  disabled={isLoading}
+                  className="w-full pl-11 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#2E8B57] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Password Confirm */}
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Konfirmasi Password</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-[#2E8B57] transition-colors" />
+                </div>
+                <input
+                  type={showPasswordConfirm ? "text" : "password"}
+                  name="passwordConfirm"
+                  value={formData.passwordConfirm}
+                  onChange={handleInputChange}
+                  placeholder="Ulangi password kamu"
+                  disabled={isLoading}
+                  className="w-full pl-11 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#2E8B57]/20 focus:border-[#2E8B57] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#2E8B57] transition-colors"
+                >
+                  {showPasswordConfirm ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Account Type Dropdown */}
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Tipe Akun</label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  disabled={isLoading}
+                  className={`w-full pl-11 pr-10 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-left transition-all duration-300 outline-none font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isDropdownOpen ? "bg-white ring-2 ring-[#2E8B57]/20 border-[#2E8B57]" : ""
+                  } ${formData.accountType ? "text-gray-900" : "text-gray-400"}`}
+                >
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    {formData.accountType === "Pembeli" ? (
+                      <ShoppingBag className={`h-5 w-5 ${isDropdownOpen ? "text-[#2E8B57]" : "text-gray-400"} transition-colors`} />
+                    ) : formData.accountType === "Penjual" ? (
+                      <Store className={`h-5 w-5 ${isDropdownOpen ? "text-[#2E8B57]" : "text-gray-400"} transition-colors`} />
+                    ) : (
+                      <User className={`h-5 w-5 ${isDropdownOpen ? "text-[#2E8B57]" : "text-gray-400"} transition-colors`} />
+                    )}
+                  </div>
+                  {formData.accountType || "Pilih tipe akun"}
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                  </div>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => handleAccountTypeSelect("Pembeli")}
+                      className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-green-50 transition-colors text-left ${
+                        formData.accountType === "Pembeli" ? "bg-green-50 text-[#2E8B57]" : "text-gray-700"
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        formData.accountType === "Pembeli" ? "bg-[#2E8B57]/10" : "bg-gray-100"
+                      }`}>
+                        <ShoppingBag className={`h-5 w-5 ${formData.accountType === "Pembeli" ? "text-[#2E8B57]" : "text-gray-500"}`} />
+                      </div>
+                      <div>
+                        <div className="font-semibold">Pembeli</div>
+                        <div className="text-xs text-gray-500">Beli produk daur ulang berkualitas</div>
+                      </div>
+                      {formData.accountType === "Pembeli" && (
+                        <CheckCircle className="h-5 w-5 text-[#2E8B57] ml-auto" />
+                      )}
+                    </button>
+                    <div className="border-t border-gray-100"></div>
+                    <button
+                      type="button"
+                      onClick={() => handleAccountTypeSelect("Penjual")}
+                      className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-green-50 transition-colors text-left ${
+                        formData.accountType === "Penjual" ? "bg-green-50 text-[#2E8B57]" : "text-gray-700"
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        formData.accountType === "Penjual" ? "bg-[#2E8B57]/10" : "bg-gray-100"
+                      }`}>
+                        <Store className={`h-5 w-5 ${formData.accountType === "Penjual" ? "text-[#2E8B57]" : "text-gray-500"}`} />
+                      </div>
+                      <div>
+                        <div className="font-semibold">Penjual</div>
+                        <div className="text-xs text-gray-500">Jual produk daur ulang kamu</div>
+                      </div>
+                      {formData.accountType === "Penjual" && (
+                        <CheckCircle className="h-5 w-5 text-[#2E8B57] ml-auto" />
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -139,7 +352,10 @@ export default function RegisterPage() {
                 <input
                   id="terms"
                   type="checkbox"
-                  className="w-5 h-5 rounded border-gray-300 text-[#2E8B57] focus:ring-[#2E8B57] cursor-pointer"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  disabled={isLoading}
+                  className="w-5 h-5 rounded border-gray-300 text-[#2E8B57] focus:ring-[#2E8B57] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
               <label htmlFor="terms" className="text-sm text-gray-500 leading-tight cursor-pointer select-none">
@@ -149,11 +365,21 @@ export default function RegisterPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#2E8B57] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#246e45] hover:shadow-xl hover:shadow-green-500/20 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden mt-4"
+              disabled={isLoading}
+              className="w-full bg-[#2E8B57] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#246e45] hover:shadow-xl hover:shadow-green-500/20 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden mt-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              <span className="relative">Daftar Sekarang</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin relative" />
+                  <span className="relative">Mendaftar...</span>
+                </>
+              ) : (
+                <>
+                  <span className="relative">Daftar Sekarang</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative" />
+                </>
+              )}
             </button>
 
             {/* Social Divider */}
