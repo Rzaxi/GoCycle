@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useState, useTransition } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Mail, Lock, Leaf, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Mail, Lock, Leaf, ArrowLeft, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { loginAction } from "@/lib/auth-actions";
 
 function SuccessMessage() {
   const searchParams = useSearchParams();
@@ -21,7 +22,34 @@ function SuccessMessage() {
   );
 }
 
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3">
+      <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+      <span className="text-red-700 text-sm font-medium">{message}</span>
+    </div>
+  );
+}
+
 export default function LoginPage() {
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  async function handleSubmit(formData: FormData) {
+    setError(null);
+
+    startTransition(async () => {
+      const result = await loginAction(formData);
+
+      if (result.success) {
+        router.push("/");
+      } else {
+        setError(result.error || "Terjadi kesalahan. Silakan coba lagi.");
+      }
+    });
+  }
+
   return (
     <div className="min-h-screen flex bg-white relative overflow-hidden">
 
@@ -111,24 +139,31 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="space-y-6">
+          <form action={handleSubmit} className="space-y-6">
             {/* Success Message */}
             <Suspense fallback={null}>
               <SuccessMessage />
             </Suspense>
 
+            {/* Error Message */}
+            {error && <ErrorMessage message={error} />}
+
             <div className="space-y-5">
               {/* Email Input */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Email Address</label>
+                <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2 ml-1">Email Address</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-[#1B4D3E] transition-colors" />
                   </div>
                   <input
+                    id="email"
+                    name="email"
                     type="email"
+                    required
+                    disabled={isPending}
                     placeholder="nama@email.com"
-                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#1B4D3E]/20 focus:border-[#1B4D3E] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium"
+                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#1B4D3E]/20 focus:border-[#1B4D3E] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -136,7 +171,7 @@ export default function LoginPage() {
               {/* Password Input */}
               <div>
                 <div className="flex items-center justify-between mb-2 ml-1">
-                  <label className="block text-sm font-bold text-gray-700">Password</label>
+                  <label htmlFor="password" className="block text-sm font-bold text-gray-700">Password</label>
                   <Link href="/forgot-password" className="text-xs text-[#1B4D3E] font-bold hover:underline">
                     Lupa Password?
                   </Link>
@@ -146,9 +181,13 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-[#1B4D3E] transition-colors" />
                   </div>
                   <input
+                    id="password"
+                    name="password"
                     type="password"
+                    required
+                    disabled={isPending}
                     placeholder="••••••••"
-                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#1B4D3E]/20 focus:border-[#1B4D3E] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium"
+                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#1B4D3E]/20 focus:border-[#1B4D3E] transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -156,11 +195,21 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#1B4D3E] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#153d31] hover:shadow-xl hover:shadow-green-900/20 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden"
+              disabled={isPending}
+              className="w-full bg-[#1B4D3E] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#153d31] hover:shadow-xl hover:shadow-green-900/20 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              <span className="relative">Masuk Sekarang</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative" />
+              {isPending ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="relative">Memproses...</span>
+                </>
+              ) : (
+                <>
+                  <span className="relative">Masuk Sekarang</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative" />
+                </>
+              )}
             </button>
 
             {/* Divider */}
@@ -175,11 +224,11 @@ export default function LoginPage() {
 
             {/* Social Login */}
             <div className="grid grid-cols-2 gap-4">
-              <button type="button" className="flex items-center justify-center px-4 py-3 border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all gap-3 group bg-white">
+              <button type="button" disabled={isPending} className="flex items-center justify-center px-4 py-3 border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all gap-3 group bg-white disabled:opacity-50 disabled:cursor-not-allowed">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span className="font-medium text-gray-700 text-sm">Google</span>
               </button>
-              <button type="button" className="flex items-center justify-center px-4 py-3 border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all gap-3 group bg-white">
+              <button type="button" disabled={isPending} className="flex items-center justify-center px-4 py-3 border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all gap-3 group bg-white disabled:opacity-50 disabled:cursor-not-allowed">
                 <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span className="font-medium text-gray-700 text-sm">Facebook</span>
               </button>
