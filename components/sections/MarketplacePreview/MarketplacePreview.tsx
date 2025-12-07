@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { IconShoppingCart, IconStar, IconArrowRight } from "@tabler/icons-react";
+import ProductCard from "@/components/ui/ProductCard/ProductCard";
 
 const products = [
     {
@@ -98,77 +99,17 @@ export default function MarketplacePreview() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            onHoverStart={() => setHoveredId(product.id)}
-                            onHoverEnd={() => setHoveredId(null)}
-                            className="group relative"
                         >
-                            <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-                                {/* Image Container */}
-                                <div className="relative h-64 overflow-hidden bg-gray-100">
-                                    <motion.img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover"
-                                        animate={{
-                                            scale: hoveredId === product.id ? 1.1 : 1,
-                                        }}
-                                        transition={{ duration: 0.6, ease: "easeOut" }}
-                                    />
-
-                                    {/* Category Badge */}
-                                    <div className="absolute top-3 left-3">
-                                        <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-700">
-                                            {product.category}
-                                        </span>
-                                    </div>
-
-                                    {/* Quick Action Overlay */}
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{
-                                            opacity: hoveredId === product.id ? 1 : 0,
-                                        }}
-                                        className="absolute inset-0 bg-black/20 backdrop-blur-[2px] flex items-center justify-center"
-                                    >
-                                        <motion.button
-                                            initial={{ y: 10 }}
-                                            animate={{
-                                                y: hoveredId === product.id ? 0 : 10,
-                                            }}
-                                            className="px-6 py-3 bg-white text-[#2E8B57] rounded-xl font-bold flex items-center gap-2 shadow-lg hover:bg-gray-50 transition-colors"
-                                        >
-                                            <IconShoppingCart size={20} />
-                                            Beli Sekarang
-                                        </motion.button>
-                                    </motion.div>
-                                </div>
-
-                                {/* Product Info */}
-                                <div className="p-5">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <h3 className="font-bold text-gray-900 text-lg leading-tight">
-                                            {product.name}
-                                        </h3>
-                                        <div className="flex items-center gap-1 text-yellow-500 flex-shrink-0 ml-2">
-                                            <IconStar size={16} fill="currentColor" />
-                                            <span className="text-sm font-semibold text-gray-700">
-                                                {product.rating}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between mt-4">
-                                        <div>
-                                            <p className="text-2xl font-bold text-[#2E8B57]">
-                                                Rp {product.price.toLocaleString("id-ID")}
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Stok: {product.stock} unit
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ProductCard
+                                id={product.id}
+                                name={product.name}
+                                price={product.price}
+                                rating={product.rating}
+                                seller="Go Cycle Store"
+                                image={product.image}
+                                category={product.category}
+                                sold={`${product.stock}+`}
+                            />
                         </motion.div>
                     ))}
                 </div>

@@ -18,6 +18,7 @@ import {
 
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholder/placeholders-and-vanish-input";
 import { allProducts, categories } from "@/lib/data";
+import ProductCard from "@/components/ui/ProductCard/ProductCard";
 
 export default function Marketplace() {
     const [activeCategory, setActiveCategory] = useState("all");
@@ -224,71 +225,25 @@ export default function Marketplace() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {filteredProducts.map((product, index) => (
-                        <Link href={`/marketplace/${product.id}`} key={product.id}>
-                            <motion.div
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05, duration: 0.5 }}
-                                className="group h-full"
-                                onMouseEnter={() => setHoveredProduct(product.id)}
-                                onMouseLeave={() => setHoveredProduct(null)}
-                            >
-                                <div className="bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 h-full flex flex-col">
-
-                                    {/* Image Section */}
-                                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
-
-                                        {/* Price Tag - Top Right */}
-                                        <div className="absolute top-0 right-0 bg-emerald-600 text-white px-3 py-1.5 rounded-bl-2xl font-bold text-sm">
-                                            Rp {(product.price / 1000).toFixed(0)}k
-                                        </div>
-
-                                        {/* Badge - Top Left */}
-                                        {product.tag && (
-                                            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                {product.tag}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Content Section */}
-                                    <div className="flex flex-col flex-grow space-y-3">
-                                        {/* Title */}
-                                        <h3 className="font-bold text-lg text-gray-900 line-clamp-1 group-hover:text-emerald-700 transition-colors">
-                                            {product.name}
-                                        </h3>
-
-                                        {/* Meta Info */}
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-1 text-amber-500">
-                                                <IconStar size={16} className="fill-amber-500" />
-                                                <span className="text-sm font-bold text-gray-900">{product.rating}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-md">
-                                                    {product.category}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Seller */}
-                                        <p className="text-xs text-gray-500">{product.seller}</p>
-
-                                        {/* Add to Cart Button */}
-                                        <button className="w-full mt-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm">
-                                            <IconShoppingCart size={18} />
-                                            <span>Tambah ke Keranjang</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </Link>
+                        <motion.div
+                            key={product.id}
+                            layout
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05, duration: 0.5 }}
+                            className="h-full"
+                        >
+                            <ProductCard
+                                id={product.id}
+                                name={product.name}
+                                price={product.price}
+                                rating={product.rating}
+                                seller={product.seller}
+                                image={product.image}
+                                tag={product.tag}
+                                category={product.category}
+                            />
+                        </motion.div>
                     ))}
                 </div>
             </section>

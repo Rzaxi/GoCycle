@@ -179,6 +179,12 @@ export function EdukasiContent() {
                                             </div>
                                         </div>
                                     ))}
+                                    {/* See More Button */}
+                                    <div className="md:col-span-3 flex justify-center mt-8">
+                                        <a href="/edukasi/tips" className="px-8 py-3 bg-emerald-600 text-white rounded-full font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2">
+                                            Lihat Semua Tips <IconArrowRight size={20} />
+                                        </a>
+                                    </div>
                                 </motion.div>
                             )}
 
@@ -217,6 +223,12 @@ export function EdukasiContent() {
                                             </div>
                                         </div>
                                     ))}
+                                    {/* See More Button */}
+                                    <div className="md:col-span-2 lg:col-span-3 flex justify-center mt-8">
+                                        <a href="/edukasi/diy" className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-full font-bold hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2">
+                                            Lihat Semua DIY <IconArrowRight size={20} />
+                                        </a>
+                                    </div>
                                 </motion.div>
                             )}
 
@@ -251,6 +263,12 @@ export function EdukasiContent() {
                                             </div>
                                         </div>
                                     ))}
+                                    {/* See More Button */}
+                                    <div className="md:col-span-3 flex justify-center mt-8">
+                                        <a href="/edukasi/berita" className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-full font-bold hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2">
+                                            Berita Lainnya <IconArrowRight size={20} />
+                                        </a>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>

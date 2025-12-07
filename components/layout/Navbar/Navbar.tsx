@@ -55,9 +55,11 @@ const Navbar = () => {
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-8 h-8 bg-[#2E8B57] rounded-full flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">
-                                G
-                            </div>
+                            <img
+                                src="/foto/logo_navbar.png"
+                                alt="Go Cycle"
+                                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+                            />
                             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#2E8B57] to-[#74B78D]">
                                 Go Cycle
                             </span>
