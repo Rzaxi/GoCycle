@@ -93,7 +93,7 @@ export default function NewsDetailPage() {
     return (
         <div className="min-h-screen bg-[#FDFBF7] font-sans pb-32">
             {/* Immersive Header Image */}
-            <div className="relative h-[50vh] w-full overflow-hidden">
+            <div className="sticky top-0 h-[70vh] w-full overflow-hidden">
                 <motion.img
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}

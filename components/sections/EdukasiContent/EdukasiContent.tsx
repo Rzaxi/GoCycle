@@ -195,36 +195,47 @@ export function EdukasiContent() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.4 }}
-                                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                                    className="grid grid-cols-1 md:grid-cols-3 gap-6"
                                 >
-                                    {diyData.map((diy) => (
-                                        <div key={diy.id} className="group bg-white rounded-[24px] overflow-hidden border border-gray-100 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300">
-                                            <div className="relative h-64 overflow-hidden">
-                                                <img src={diy.image} alt={diy.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm">
-                                                    {diy.category}
-                                                </div>
+                                    {diyData.map((diy, index) => (
+                                        <div
+                                            key={diy.id}
+                                            className={`group relative overflow-hidden rounded-[32px] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-[500px]' : 'h-[240px]'}`}
+                                        >
+                                            <img src={diy.image} alt={diy.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+                                            <div className="absolute top-6 left-6 flex gap-2">
+                                                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white border border-white/20">
+                                                    {diy.difficulty}
+                                                </span>
+                                                <span className="bg-black/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-1">
+                                                    <IconClock size={12} /> {diy.time}
+                                                </span>
                                             </div>
-                                            <div className="p-6">
-                                                <div className="flex items-center gap-4 text-xs font-medium text-gray-500 mb-3">
-                                                    <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md">
-                                                        <IconChartBar size={14} className="text-[#2E8B57]" />
-                                                        {diy.difficulty}
-                                                    </span>
-                                                    <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md">
-                                                        <IconClock size={14} className="text-[#2E8B57]" />
-                                                        {diy.time}
-                                                    </span>
+
+                                            <div className="absolute bottom-0 left-0 p-8 w-full">
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <div className="bg-emerald-500/90 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg backdrop-blur-sm">
+                                                        <IconTools size={20} />
+                                                    </div>
+                                                    <button className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:text-black">
+                                                        <IconArrowRight size={20} />
+                                                    </button>
                                                 </div>
-                                                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#2E8B57] transition-colors">{diy.title}</h3>
-                                                <button className="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-black hover:text-white hover:border-black transition-all duration-300 flex items-center justify-center gap-2">
-                                                    Lihat Panduan <IconArrowRight size={16} />
-                                                </button>
+                                                <h3 className={`font-bold text-white mb-2 leading-tight ${index === 0 ? 'text-3xl md:text-4xl' : 'text-xl'}`}>
+                                                    {diy.title}
+                                                </h3>
+                                                {index === 0 && (
+                                                    <p className="text-gray-200 text-lg line-clamp-2 max-w-lg mb-2">Project DIY seru untuk rumah yang lebih asri.</p>
+                                                )}
+                                                <span className="text-emerald-300 text-xs font-bold uppercase tracking-wider">{diy.category}</span>
                                             </div>
                                         </div>
                                     ))}
                                     {/* See More Button */}
-                                    <div className="md:col-span-2 lg:col-span-3 flex justify-center mt-8">
+                                    <div className="md:col-span-3 flex justify-center mt-8">
                                         <a href="/edukasi/diy" className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-full font-bold hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2">
                                             Lihat Semua DIY <IconArrowRight size={20} />
                                         </a>
@@ -239,27 +250,39 @@ export function EdukasiContent() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.4 }}
-                                    className="grid grid-cols-1 md:grid-cols-3 gap-8"
+                                    className="grid grid-cols-1 md:grid-cols-3 gap-6"
                                 >
                                     {newsData.map((news, index) => (
-                                        <div key={news.id} className="group flex flex-col bg-white rounded-[24px] overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 border border-gray-100">
-                                            <div className="h-56 overflow-hidden relative">
-                                                <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full font-medium">
+                                        <div
+                                            key={news.id}
+                                            className={`group relative overflow-hidden rounded-[32px] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-[500px]' : 'h-[240px]'}`}
+                                        >
+                                            <img src={news.image} alt={news.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+                                            <div className="absolute top-6 left-6">
+                                                <span className="bg-emerald-600/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg">
                                                     {news.source}
-                                                </div>
+                                                </span>
                                             </div>
-                                            <div className="p-6 flex-1 flex flex-col">
-                                                <div className="text-xs font-medium text-gray-400 mb-3">{news.date}</div>
-                                                <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#2E8B57] transition-colors">
+
+                                            <div className="absolute bottom-0 left-0 p-8 w-full">
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <div className="bg-white/20 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg backdrop-blur-sm border border-white/10">
+                                                        <IconNews size={20} />
+                                                    </div>
+                                                    <button className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:text-black">
+                                                        <IconArrowRight size={20} />
+                                                    </button>
+                                                </div>
+                                                <h3 className={`font-bold text-white mb-2 leading-tight ${index === 0 ? 'text-3xl md:text-4xl' : 'text-xl'}`}>
                                                     {news.title}
                                                 </h3>
-                                                <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-1">
-                                                    {news.excerpt}
-                                                </p>
-                                                <button className="text-[#2E8B57] font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                                                    Baca Selengkapnya <IconArrowRight size={16} />
-                                                </button>
+                                                {index === 0 && (
+                                                    <p className="text-gray-200 text-lg line-clamp-2 max-w-lg mb-2">{news.excerpt}</p>
+                                                )}
+                                                <span className="text-gray-300 text-xs font-medium uppercase tracking-wider">{news.date}</span>
                                             </div>
                                         </div>
                                     ))}
