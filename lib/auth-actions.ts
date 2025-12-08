@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { loginUser } from "@/lib/api";
 import { redirect } from "next/navigation";
 
@@ -17,8 +17,16 @@ export async function loginAction(formData: FormData): Promise<LoginActionResult
         return { success: false, error: "Email dan password harus diisi" };
     }
 
+    // Get browser headers to forward to backend for accurate device detection
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const forwardedFor = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
+
     try {
-        const response = await loginUser({ email, password });
+        const response = await loginUser(
+            { email, password },
+            { userAgent, forwardedFor }
+        );
         const { tokens, user } = response.data;
 
         const cookieStore = await cookies();

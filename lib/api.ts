@@ -52,12 +52,25 @@ interface LoginResponse {
     };
 }
 
-export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
+export async function loginUser(
+    payload: LoginPayload,
+    forwardHeaders?: { userAgent?: string; forwardedFor?: string }
+): Promise<LoginResponse> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    };
+
+    // Forward browser headers for accurate device detection
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+    }
+
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(payload),
     });
 
