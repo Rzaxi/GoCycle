@@ -4,17 +4,56 @@ import React, { useState } from "react";
 import { IconMail, IconLock, IconBrandGoogle, IconArrowRight, IconLoader2 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { loginAction } from "@/lib/auth-actions";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = (e: React.FormEvent) => {
+    // Form state
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            window.location.href = "/profile";
-        }, 1500);
+
+        // Client-side validation
+        if (!email.trim()) {
+            setError("Email harus diisi");
+            setIsLoading(false);
+            return;
+        }
+
+        if (!password) {
+            setError("Password harus diisi");
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("email", email.trim());
+            formData.append("password", password);
+
+            const result = await loginAction(formData);
+
+            if (result.success) {
+                // Redirect to home page on successful login
+                window.location.href = "/";
+            } else {
+                setError(result.error || "Login gagal. Silakan coba lagi.");
+            }
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Terjadi kesalahan. Silakan coba lagi.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -48,6 +87,16 @@ export default function LoginPage() {
                         <p className="text-gray-500">Masukkan email dan password untuk melanjutkan.</p>
                     </div>
 
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"
+                        >
+                            {error}
+                        </motion.div>
+                    )}
+
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
@@ -55,9 +104,11 @@ export default function LoginPage() {
                                 <IconMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                                 <input
                                     type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                                    placeholder="nama@email.com"
-                                    defaultValue="user@gocycle.id"
+                                    required
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>
@@ -71,9 +122,11 @@ export default function LoginPage() {
                                 <IconLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                                 <input
                                     type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                                    placeholder="••••••••"
-                                    defaultValue="password123"
+                                    required
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>

@@ -182,7 +182,7 @@ const Navbar = () => {
                                                 <button
                                                     onClick={() => {
                                                         setIsProfileDropdownOpen(false);
-                                                        // Profile page - do nothing for now
+                                                        router.push('/profile');
                                                     }}
                                                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                                 >
@@ -301,7 +301,7 @@ const Navbar = () => {
                                                 <button
                                                     onClick={() => {
                                                         setIsMobileMenuOpen(false);
-                                                        // Profile - do nothing for now
+                                                        router.push('/profile');
                                                     }}
                                                     className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-gray-700 font-bold bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
                                                 >
