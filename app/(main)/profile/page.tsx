@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
     IconUser,
@@ -11,30 +11,89 @@ import {
     IconLogout,
     IconBuildingStore,
     IconChevronRight,
-    IconPackage,
-    IconTruck,
     IconCheck,
-    IconWallet,
-    IconCoin,
-    IconGift
+    IconLoader2
 } from "@tabler/icons-react";
+import { getAccessToken, logoutAction } from "@/lib/auth-actions";
+import { getUserProfile } from "@/lib/api";
+
+interface UserData {
+    name: string;
+    email: string;
+    avatar: string;
+    walletBalance: string;
+    points: string;
+    isSeller: boolean;
+}
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState("orders");
+    const [user, setUser] = useState<UserData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Mock User Data
-    const user = {
-        name: "Razi Al-Fatih",
-        email: "razi.fatih@example.com",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Razi",
-        joinDate: "Member sejak 2023",
-        walletBalance: "Rp 150.000",
-        points: "2.400 Poin",
-        isSeller: false, // Change this to true to test Seller View (future phase)
+    useEffect(() => {
+        async function fetchProfile() {
+            try {
+                const token = await getAccessToken();
+                if (!token) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const response = await getUserProfile(token);
+                setUser({
+                    name: response.data.fullName,
+                    email: response.data.email,
+                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${response.data.fullName}`,
+                    walletBalance: "Rp 150.000",
+                    points: "2.400 Poin",
+                    isSeller: response.data.accountType === "Penjual",
+                });
+            } catch (err) {
+                if (err instanceof Error && err.message === "UNAUTHORIZED") {
+                    window.location.href = "/login";
+                    return;
+                }
+                setError("Gagal memuat profil");
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchProfile();
+    }, []);
+
+    const handleLogout = async () => {
+        await logoutAction();
     };
 
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 pt-28 flex items-center justify-center">
+                <IconLoader2 className="animate-spin text-emerald-600" size={48} />
+            </div>
+        );
+    }
+
+    if (error || !user) {
+        return (
+            <div className="min-h-screen bg-gray-50 pt-28 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-600 mb-4">{error || "Gagal memuat profil"}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg"
+                    >
+                        Coba Lagi
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 pt-28 pb-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                 {/* LEFT SIDEBAR: PROFILE CARD */}
@@ -83,7 +142,10 @@ export default function ProfilePage() {
                             <button className="flex items-center gap-3 px-6 py-4 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                                 <IconSettings size={20} /> Pengaturan Akun
                             </button>
-                            <button className="flex items-center gap-3 px-6 py-4 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-3 px-6 py-4 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                            >
                                 <IconLogout size={20} /> Keluar
                             </button>
                         </nav>
@@ -93,34 +155,36 @@ export default function ProfilePage() {
                 {/* RIGHT CONTENT */}
                 <div className="lg:col-span-3 space-y-8">
 
-                    {/* SELLER CTA CARD (Modern Banner) */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="relative bg-gradient-to-r from-emerald-900 to-teal-800 rounded-3xl p-8 overflow-hidden shadow-lg group cursor-pointer"
-                        onClick={() => window.location.href = '/seller/onboarding'}
-                    >
-                        <div className="absolute right-0 top-0 h-full w-1/2 bg-white/5 skew-x-12 transform origin-bottom-right"></div>
-                        <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl"></div>
+                    {/* SELLER CTA CARD - Only show for non-sellers */}
+                    {!user.isSeller && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="relative bg-gradient-to-r from-emerald-900 to-teal-800 rounded-3xl p-8 overflow-hidden shadow-lg group cursor-pointer"
+                            onClick={() => window.location.href = '/seller/onboarding'}
+                        >
+                            <div className="absolute right-0 top-0 h-full w-1/2 bg-white/5 skew-x-12 transform origin-bottom-right"></div>
+                            <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl"></div>
 
-                        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                            <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold uppercase tracking-wider mb-3 border border-emerald-500/30">
-                                    <IconBuildingStore size={14} /> Gocycle Mitra
+                            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                                <div>
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold uppercase tracking-wider mb-3 border border-emerald-500/30">
+                                        <IconBuildingStore size={14} /> Gocycle Mitra
+                                    </div>
+                                    <h3 className="text-3xl font-bold text-white mb-2">Mulai Jualan di Gocycle?</h3>
+                                    <p className="text-emerald-100 max-w-md text-sm leading-relaxed">
+                                        Jadilah bagian dari ekonomi sirkular. Jual sampah terpilah atau produk daur ulangmu ke ribuan pembeli aktif.
+                                    </p>
                                 </div>
-                                <h3 className="text-3xl font-bold text-white mb-2">Mulai Jualan di Gocycle?</h3>
-                                <p className="text-emerald-100 max-w-md text-sm leading-relaxed">
-                                    Jadilah bagian dari ekonomi sirkular. Jual sampah terpilah atau produk daur ulangmu ke ribuan pembeli aktif.
-                                </p>
+                                <div className="flex-shrink-0">
+                                    <button className="bg-white text-emerald-900 px-8 py-3 rounded-full font-bold shadow-xl hover:bg-emerald-50 transition-colors flex items-center gap-2 group-hover:scale-105 transform duration-300">
+                                        Buka Toko Gratis <IconChevronRight size={18} />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex-shrink-0">
-                                <button className="bg-white text-emerald-900 px-8 py-3 rounded-full font-bold shadow-xl hover:bg-emerald-50 transition-colors flex items-center gap-2 group-hover:scale-105 transform duration-300">
-                                    Buka Toko Gratis <IconChevronRight size={18} />
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    )}
 
                     {/* MAIN CONTENT AREA */}
                     <motion.div

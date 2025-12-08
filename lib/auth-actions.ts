@@ -106,3 +106,43 @@ export async function isAuthenticated(): Promise<boolean> {
     const token = await getAccessToken();
     return !!token;
 }
+
+export async function refreshUserInfo(): Promise<{ success: boolean; error?: string }> {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    const refreshToken = cookieStore.get("refreshToken")?.value;
+
+    if (!accessToken) {
+        return { success: false, error: "Not authenticated" };
+    }
+
+    try {
+        const { getUserProfile } = await import("@/lib/api");
+        const response = await getUserProfile(accessToken);
+        const user = response.data;
+
+        // Get refresh token expiry from existing cookie or default to 30 days
+        const expiresAt = refreshToken
+            ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+        // Update userInfo cookie with fresh data
+        cookieStore.set("userInfo", JSON.stringify({
+            id: user.id,
+            email: user.email,
+            fullName: user.fullName,
+            accountType: user.accountType,
+        }), {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            expires: expiresAt,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to refresh user info:", error);
+        return { success: false, error: "Failed to refresh user info" };
+    }
+}

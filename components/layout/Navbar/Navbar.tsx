@@ -192,6 +192,24 @@ const Navbar = () => {
                                                     <span className="font-medium">Profile</span>
                                                 </button>
 
+                                                {/* Dashboard button - only for sellers */}
+                                                {userInfo.accountType === 'Penjual' && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setIsProfileDropdownOpen(false);
+                                                            router.push('/seller/dashboard');
+                                                        }}
+                                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                            <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                                            </svg>
+                                                        </div>
+                                                        <span className="font-medium">Dashboard</span>
+                                                    </button>
+                                                )}
+
                                                 <div className="mx-4 my-1 border-t border-gray-100"></div>
 
                                                 <button
@@ -297,7 +315,7 @@ const Navbar = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4 pt-2">
+                                            <div className={`grid ${userInfo?.accountType === 'Penjual' ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-4'} pt-2`}>
                                                 <button
                                                     onClick={() => {
                                                         setIsMobileMenuOpen(false);
@@ -308,6 +326,23 @@ const Navbar = () => {
                                                     <User className="w-5 h-5" />
                                                     Profile
                                                 </button>
+
+                                                {/* Dashboard button - only for sellers */}
+                                                {userInfo?.accountType === 'Penjual' && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setIsMobileMenuOpen(false);
+                                                            router.push('/seller/dashboard');
+                                                        }}
+                                                        className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-gray-700 font-bold bg-blue-50 hover:bg-blue-100 transition-colors border border-blue-200"
+                                                    >
+                                                        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                                        </svg>
+                                                        Dashboard
+                                                    </button>
+                                                )}
+
                                                 <button
                                                     onClick={() => {
                                                         setIsMobileMenuOpen(false);

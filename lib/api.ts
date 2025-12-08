@@ -143,3 +143,102 @@ export async function logoutUser(
 
     return response.json();
 }
+
+// === USER PROFILE ===
+interface UserProfileResponse {
+    message: string;
+    data: {
+        id: string;
+        fullName: string;
+        email: string;
+        accountType: AccountType;
+        createdAt: string;
+    };
+}
+
+export async function getUserProfile(accessToken: string): Promise<UserProfileResponse> {
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            throw new Error("UNAUTHORIZED");
+        }
+        throw new Error("Gagal mengambil data profil");
+    }
+
+    return response.json();
+}
+
+// === STORE ===
+interface CreateStorePayload {
+    name: string;
+    description?: string;
+    address: string;
+}
+
+interface StoreResponse {
+    message: string;
+    data: {
+        id: string;
+        userId: string;
+        name: string;
+        description?: string;
+        address: string;
+        createdAt: string;
+    };
+}
+
+export async function createStore(
+    accessToken: string,
+    payload: CreateStorePayload
+): Promise<StoreResponse> {
+    const response = await fetch(`${API_BASE_URL}/stores`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData: ApiError = await response.json();
+
+        if (response.status === 400 && errorData.details?.fieldErrors) {
+            const fieldErrors = errorData.details.fieldErrors;
+            const firstError = Object.values(fieldErrors).flat()[0];
+            throw new Error(firstError || "Validasi gagal");
+        }
+
+        if (response.status === 409) {
+            throw new Error("Anda sudah memiliki toko.");
+        }
+
+        throw new Error("Terjadi kesalahan. Silakan coba lagi.");
+    }
+
+    return response.json();
+}
+
+export async function getMyStore(accessToken: string): Promise<StoreResponse | null> {
+    const response = await fetch(`${API_BASE_URL}/stores/my-store`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        if (response.status === 404) {
+            return null; // User doesn't have a store yet
+        }
+        throw new Error("Gagal mengambil data toko");
+    }
+
+    return response.json();
+}
