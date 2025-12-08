@@ -1,21 +1,87 @@
 "use client";
 
 import React, { useState } from "react";
-import { IconMail, IconLock, IconUser, IconArrowRight, IconLoader2, IconBrandGoogle } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowRight, IconLoader2, IconBrandGoogle, IconCheck } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { registerUser } from "@/lib/api";
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  // Form state
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      window.location.href = "/profile";
-    }, 1500);
+
+    // Client-side validation
+    if (password !== passwordConfirm) {
+      setError("Konfirmasi password tidak cocok");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password minimal 8 karakter");
+      setIsLoading(false);
+      return;
+    }
+
+    if (fullName.trim().length < 3) {
+      setError("Nama lengkap minimal 3 karakter");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      await registerUser({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        password,
+        passwordConfirm,
+      });
+
+      setSuccess(true);
+      // Redirect to login after successful registration
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <IconCheck className="text-emerald-600" size={40} />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil!</h2>
+          <p className="text-gray-500">Mengalihkan ke halaman login...</p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -31,6 +97,16 @@ export default function RegisterPage() {
             <p className="text-gray-500">Bergabunglah dengan komunitas peduli lingkungan.</p>
           </div>
 
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+
           <form onSubmit={handleRegister} className="space-y-5">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap</label>
@@ -38,8 +114,12 @@ export default function RegisterPage() {
                 <IconUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="Nama Kamu"
+                  required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -50,8 +130,12 @@ export default function RegisterPage() {
                 <IconMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="nama@email.com"
+                  required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -62,8 +146,28 @@ export default function RegisterPage() {
                 <IconLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="Minimal 8 karakter"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Password</label>
+              <div className="relative">
+                <IconLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="password"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="Ulangi password"
+                  required
+                  disabled={isLoading}
                 />
               </div>
             </div>

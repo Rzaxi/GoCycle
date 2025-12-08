@@ -7,7 +7,6 @@ interface RegisterPayload {
     email: string;
     password: string;
     passwordConfirm: string;
-    accountType: AccountType;
 }
 
 interface RegisterResponse {
