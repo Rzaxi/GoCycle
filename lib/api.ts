@@ -242,3 +242,129 @@ export async function getMyStore(accessToken: string): Promise<StoreResponse | n
 
     return response.json();
 }
+
+// Product API Types
+type ProductCategory = "Kerajinan" | "Bahan Baku";
+type WeightUnit = "g" | "kg";
+
+export interface ProductResponse {
+    id: string;
+    userId: string;
+    name: string;
+    description: string | undefined;
+    category: ProductCategory;
+    price: number;
+    priceUnit: WeightUnit;
+    priceUnitAmount: number;
+    stock: number;
+    stockUnit: WeightUnit;
+    imagePath: string;
+    imageUrl: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface ProductListResponse {
+    message: string;
+    data: ProductResponse[];
+}
+
+interface CreateProductResponse {
+    message: string;
+    data: ProductResponse;
+}
+
+export interface CreateProductPayload {
+    name: string;
+    description?: string;
+    category: ProductCategory;
+    price: number;
+    priceUnit: WeightUnit;
+    priceUnitAmount: number;
+    stock: number;
+    stockUnit: WeightUnit;
+    image: File;
+}
+
+export async function createProduct(
+    accessToken: string,
+    payload: CreateProductPayload
+): Promise<CreateProductResponse> {
+    const formData = new FormData();
+    formData.append("name", payload.name);
+    if (payload.description) {
+        formData.append("description", payload.description);
+    }
+    formData.append("category", payload.category);
+    formData.append("price", payload.price.toString());
+    formData.append("priceUnit", payload.priceUnit);
+    formData.append("priceUnitAmount", payload.priceUnitAmount.toString());
+    formData.append("stock", payload.stock.toString());
+    formData.append("stockUnit", payload.stockUnit);
+    formData.append("image", payload.image);
+
+    const response = await fetch(`${API_BASE_URL}/products`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: formData,
+    });
+
+    if (!response.ok) {
+        const errorData: ApiError = await response.json();
+
+        if (response.status === 400 && errorData.details?.fieldErrors) {
+            const fieldErrors = errorData.details.fieldErrors;
+            const firstError = Object.values(fieldErrors).flat()[0];
+            throw new Error(firstError || "Validasi gagal");
+        }
+
+        if (response.status === 403) {
+            throw new Error("Hanya penjual yang bisa menambahkan produk.");
+        }
+
+        if (response.status === 400 && errorData.error === "IMAGE_REQUIRED") {
+            throw new Error("Foto produk wajib diupload.");
+        }
+
+        if (response.status === 400 && errorData.error === "INVALID_FILE_TYPE") {
+            throw new Error("Format file tidak didukung. Gunakan JPG, JPEG, PNG, atau WebP.");
+        }
+
+        if (response.status === 400 && errorData.error === "FILE_TOO_LARGE") {
+            throw new Error("Ukuran file melebihi 5MB.");
+        }
+
+        throw new Error(errorData.error || "Terjadi kesalahan. Silakan coba lagi.");
+    }
+
+    return response.json();
+}
+
+export async function getMyProducts(accessToken: string): Promise<ProductListResponse> {
+    const response = await fetch(`${API_BASE_URL}/products/my-products`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Gagal mengambil data produk");
+    }
+
+    return response.json();
+}
+
+export async function getAllProducts(): Promise<ProductListResponse> {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+        method: "GET",
+    });
+
+    if (!response.ok) {
+        throw new Error("Gagal mengambil data produk");
+    }
+
+    return response.json();
+}

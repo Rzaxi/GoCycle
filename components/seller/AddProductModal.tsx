@@ -3,11 +3,13 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { IconX, IconPhoto, IconPackage, IconRecycle, IconUpload, IconTrash } from "@tabler/icons-react";
+import { createProductAction } from "@/lib/product-actions";
+import { ProductResponse } from "@/lib/api";
 
 interface AddProductModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onAddProduct: (product: ProductFormData) => void;
+    onSuccess: (product: ProductResponse) => void;
 }
 
 interface ProductFormData {
@@ -22,7 +24,7 @@ interface ProductFormData {
     image: string;
 }
 
-export default function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalProps) {
     // Form state
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -37,6 +39,7 @@ export default function AddProductModal({ isOpen, onClose, onAddProduct }: AddPr
     const [imageError, setImageError] = useState<string>("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string>("");
 
     // Allowed image formats
     const ALLOWED_FORMATS = [".jpg", ".jpeg", ".png", ".webp"];
@@ -152,29 +155,44 @@ export default function AddProductModal({ isOpen, onClose, onAddProduct }: AddPr
     };
 
     // Handle form submit
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitError("");
 
-        // Simulate API call
-        setTimeout(() => {
-            const productData: ProductFormData = {
-                name,
-                description,
-                category,
-                price,
-                priceUnit,
-                priceUnitAmount,
-                stock,
-                stockUnit,
-                image: imagePreview || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=100&q=80",
-            };
-
-            onAddProduct(productData);
-            resetForm();
-            onClose();
+        if (!imageFile) {
+            setSubmitError("Foto produk wajib diupload.");
             setIsSubmitting(false);
-        }, 1000);
+            return;
+        }
+
+        // Create FormData for server action
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("price", price.toString());
+        formData.append("priceUnit", priceUnit);
+        formData.append("priceUnitAmount", priceUnitAmount.toString());
+        formData.append("stock", stock.toString());
+        formData.append("stockUnit", stockUnit);
+        formData.append("image", imageFile);
+
+        try {
+            const result = await createProductAction(formData);
+
+            if (result.success && result.data) {
+                onSuccess(result.data);
+                resetForm();
+                onClose();
+            } else {
+                setSubmitError(result.error || "Terjadi kesalahan. Silakan coba lagi.");
+            }
+        } catch (error: any) {
+            setSubmitError(error.message || "Terjadi kesalahan. Silakan coba lagi.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -462,8 +480,8 @@ export default function AddProductModal({ isOpen, onClose, onAddProduct }: AddPr
                                         <div
                                             onClick={() => fileInputRef.current?.click()}
                                             className={`w-full h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all ${imageError
-                                                    ? "border-red-300 bg-red-50"
-                                                    : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
+                                                ? "border-red-300 bg-red-50"
+                                                : "border-gray-300 hover:border-emerald-400 hover:bg-emerald-50"
                                                 }`}
                                         >
                                             <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-3 ${imageError ? "bg-red-100" : "bg-gray-100"
@@ -495,6 +513,13 @@ export default function AddProductModal({ isOpen, onClose, onAddProduct }: AddPr
                                         </p>
                                     )}
                                 </div>
+
+                                {/* Submit Error */}
+                                {submitError && (
+                                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 font-medium">
+                                        ⚠️ {submitError}
+                                    </div>
+                                )}
 
                                 {/* Actions */}
                                 <div className="flex gap-3 pt-4 border-t border-gray-100">
