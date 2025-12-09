@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import {
     IconPlus,
@@ -7,17 +8,65 @@ import {
     IconFilter,
     IconEdit,
     IconTrash,
-    IconDots
 } from "@tabler/icons-react";
+import AddProductModal from "@/components/seller/AddProductModal";
+
+interface Product {
+    id: number;
+    name: string;
+    price: string;
+    stock: string;
+    category: string;
+    status: "Aktif" | "Stok Habis" | "Arsip";
+    image: string;
+}
 
 export default function SellerProductsPage() {
-    // Mock Product Data
-    const products = [
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [products, setProducts] = useState<Product[]>([
         { id: 1, name: "Botol Plastik PET Bersih", price: "Rp 3.500/kg", stock: "45 kg", category: "Plastik", status: "Aktif", image: "https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?w=100&q=80" },
         { id: 2, name: "Kardus Bekas Layak Pakai", price: "Rp 2.000/kg", stock: "120 kg", category: "Kertas", status: "Aktif", image: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=100&q=80" },
         { id: 3, name: "Kaleng Aluminium", price: "Rp 12.000/kg", stock: "5 kg", category: "Logam", status: "Stok Habis", image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=100&q=80" },
         { id: 4, name: "Tutup Botol HDPE", price: "Rp 5.000/kg", stock: "12 kg", category: "Plastik", status: "Arsip", image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=100&q=80" },
-    ];
+    ]);
+
+    // Handle add product from modal
+    const handleAddProduct = (productData: any) => {
+        // Convert price to display format
+        let displayPrice = "";
+        let displayStock = "";
+
+        if (productData.category === "Kerajinan") {
+            displayPrice = `Rp ${productData.price.toLocaleString("id-ID")}`;
+            displayStock = `${productData.stock} pcs`;
+        } else {
+            // Bahan Baku - display in the same unit seller inputted
+            const unit = productData.priceUnit; // "g" or "kg"
+            const unitAmount = productData.priceUnitAmount;
+
+            // Format price with the original unit
+            if (unitAmount === 1) {
+                displayPrice = `Rp ${productData.price.toLocaleString("id-ID")}/${unit}`;
+            } else {
+                displayPrice = `Rp ${productData.price.toLocaleString("id-ID")}/${unitAmount}${unit}`;
+            }
+
+            // Stock - display in the original unit
+            displayStock = `${productData.stock} ${productData.stockUnit}`;
+        }
+
+        const newProduct: Product = {
+            id: products.length + 1,
+            name: productData.name,
+            price: displayPrice,
+            stock: displayStock,
+            category: productData.category,
+            status: "Aktif",
+            image: productData.image,
+        };
+
+        setProducts([newProduct, ...products]);
+    };
 
     return (
         <div className="space-y-6">
@@ -28,7 +77,7 @@ export default function SellerProductsPage() {
                     <p className="text-gray-500 text-sm">Kelola semua barang daur ulang yang kamu jual.</p>
                 </div>
                 <button
-                    onClick={() => alert("Fitur: Form Tambah Produk")}
+                    onClick={() => setIsAddModalOpen(true)}
                     className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20"
                 >
                     <IconPlus size={20} /> Tambah Produk
@@ -66,7 +115,12 @@ export default function SellerProductsPage() {
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {products.map((product) => (
-                                <tr key={product.id} className="hover:bg-gray-50 transition-colors group">
+                                <motion.tr
+                                    key={product.id}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="hover:bg-gray-50 transition-colors group"
+                                >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
@@ -81,18 +135,23 @@ export default function SellerProductsPage() {
                                     <td className="px-6 py-4 font-medium text-emerald-600">{product.price}</td>
                                     <td className="px-6 py-4 text-gray-600">{product.stock}</td>
                                     <td className="px-6 py-4">
-                                        <span className="px-2 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-600 border border-gray-200">
+                                        <span className={`px-2 py-1 rounded-md text-xs font-medium border ${product.category === "Kerajinan"
+                                            ? "bg-purple-50 text-purple-600 border-purple-200"
+                                            : product.category === "Bahan Baku"
+                                                ? "bg-amber-50 text-amber-600 border-amber-200"
+                                                : "bg-gray-100 text-gray-600 border-gray-200"
+                                            }`}>
                                             {product.category}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${product.status === "Aktif" ? "bg-green-50 text-green-600 border border-green-100" :
-                                                product.status === "Stok Habis" ? "bg-red-50 text-red-600 border border-red-100" :
-                                                    "bg-gray-100 text-gray-500 border border-gray-200"
+                                            product.status === "Stok Habis" ? "bg-red-50 text-red-600 border border-red-100" :
+                                                "bg-gray-100 text-gray-500 border border-gray-200"
                                             }`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${product.status === "Aktif" ? "bg-green-500" :
-                                                    product.status === "Stok Habis" ? "bg-red-500" :
-                                                        "bg-gray-400"
+                                                product.status === "Stok Habis" ? "bg-red-500" :
+                                                    "bg-gray-400"
                                                 }`}></span>
                                             {product.status}
                                         </span>
@@ -107,7 +166,7 @@ export default function SellerProductsPage() {
                                             </button>
                                         </div>
                                     </td>
-                                </tr>
+                                </motion.tr>
                             ))}
                         </tbody>
                     </table>
@@ -115,13 +174,20 @@ export default function SellerProductsPage() {
 
                 {/* Pagination (Static) */}
                 <div className="border-t border-gray-100 p-4 flex items-center justify-between">
-                    <span className="text-sm text-gray-500">Menampilkan 1-4 dari 14 produk</span>
+                    <span className="text-sm text-gray-500">Menampilkan 1-{products.length} dari {products.length} produk</span>
                     <div className="flex gap-2">
                         <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>Sebelumnya</button>
                         <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 hover:bg-gray-50">Selanjutnya</button>
                     </div>
                 </div>
             </div>
+
+            {/* Add Product Modal */}
+            <AddProductModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAddProduct={handleAddProduct}
+            />
         </div>
     );
 }
