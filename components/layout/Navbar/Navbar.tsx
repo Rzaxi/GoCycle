@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useTransition } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, LogOut, ChevronDown } from 'lucide-react';
+import { User, LogOut, ChevronDown, ShoppingCart } from 'lucide-react';
 import { logoutAction } from '@/lib/auth-actions';
+import { useCart } from '@/context/CartContext';
 
 interface UserInfo {
     id: string;
@@ -41,6 +42,7 @@ const Navbar = () => {
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [isPending, startTransition] = useTransition();
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { cartCount } = useCart();
 
     // Check auth status on mount and when pathname changes
     useEffect(() => {
@@ -143,8 +145,25 @@ const Navbar = () => {
                         })}
                     </div>
 
-                    {/* Auth Section */}
-                    <div className="hidden md:flex items-center space-x-3">
+                    {/* Right Side Section (Cart & Auth) */}
+                    <div className="hidden md:flex items-center gap-4">
+                        {/* Cart Button */}
+                        <Link
+                            href="/cart"
+                            className={`
+                                relative p-2 transition-colors
+                                ${pathname === '/cart' ? 'text-[#2E8B57] bg-green-50 rounded-full' : 'text-gray-600 hover:text-[#2E8B57]'}
+                            `}
+                        >
+                            <ShoppingCart className="w-6 h-6" />
+                            {cartCount > 0 && (
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
+
+                        {/* Auth Section */}
                         {isLoggedIn ? (
                             /* Profile Dropdown */
                             <div className="relative" ref={dropdownRef}>

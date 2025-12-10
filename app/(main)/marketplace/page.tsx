@@ -97,9 +97,9 @@ export default function Marketplace() {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-sm font-medium hover:bg-white hover:text-black transition-all cursor-pointer">
+                                <Link href="/impact" className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-sm font-medium hover:bg-white hover:text-black transition-all cursor-pointer">
                                     Lihat Laporan Lengkap
-                                </div>
+                                </Link>
                                 <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white cursor-pointer hover:scale-110 transition-transform">
                                     <IconArrowRight size={24} />
                                 </div>

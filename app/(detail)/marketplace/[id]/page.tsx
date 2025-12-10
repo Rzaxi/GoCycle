@@ -123,11 +123,11 @@ export default function ProductDetail() {
                         {/* DESKTOP ACTIONS (Inline) */}
                         <div className="hidden lg:flex items-center gap-4 mb-10">
                             <button className="flex-1 bg-gray-900 text-white font-bold rounded-xl text-lg hover:bg-emerald-600 transition-all shadow-lg shadow-gray-200 hover:shadow-emerald-200 flex items-center justify-center gap-3 h-14 active:scale-[0.99]">
-                                <IconShoppingCart size={22} />
-                                Tambah ke Keranjang
+                                <IconShieldCheck size={22} />
+                                Beli Sekarang
                             </button>
-                            <button className="w-14 h-14 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all bg-white">
-                                <IconHeart size={24} />
+                            <button className="w-14 h-14 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50 transition-all bg-white">
+                                <IconShoppingCart size={24} />
                             </button>
                             <button className="w-14 h-14 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-all bg-white">
                                 <IconShare size={24} />
@@ -288,12 +288,12 @@ export default function ProductDetail() {
             {/* MOBILE STICKY BOTTOM ACTIONS (Hidden on Desktop) */}
             <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-6 sm:pb-4">
                 <div className="flex items-center gap-3">
-                    <button className="w-12 h-12 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all bg-white">
-                        <IconHeart size={22} />
+                    <button className="w-12 h-12 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50 transition-all bg-white">
+                        <IconShoppingCart size={22} />
                     </button>
                     <button className="flex-1 bg-gray-900 text-white font-bold rounded-xl text-base hover:bg-emerald-600 transition-all shadow-lg shadow-gray-200 hover:shadow-emerald-200 flex items-center justify-center gap-2 h-12 active:scale-[0.99]">
-                        <IconShoppingCart size={20} />
-                        Tambah ke Keranjang
+                        <IconShieldCheck size={20} />
+                        Beli Sekarang
                     </button>
                 </div>
             </div>
