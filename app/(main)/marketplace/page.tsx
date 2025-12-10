@@ -48,7 +48,7 @@ export default function Marketplace() {
         <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-emerald-100">
 
             {/* 1. HERO SECTION - CENTERED STACKED STYLE */}
-            <section className="relative pt-24 pb-16 px-4 sm:px-8 lg:px-16 overflow-hidden">
+            <section className="relative pt-40 pb-16 px-4 sm:px-8 lg:px-16 overflow-hidden">
                 <div className="max-w-[1400px] mx-auto flex flex-col items-center text-center">
 
                     {/* Badge */}
