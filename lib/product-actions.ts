@@ -26,6 +26,7 @@ export async function createProductAction(formData: FormData): Promise<{
             name: formData.get("name") as string,
             description: formData.get("description") as string || undefined,
             category: formData.get("category") as "Kerajinan" | "Bahan Baku",
+            subCategoryId: formData.get("subCategoryId") as string || undefined,
             price: parseInt(formData.get("price") as string),
             priceUnit: formData.get("priceUnit") as "g" | "kg",
             priceUnitAmount: parseInt(formData.get("priceUnitAmount") as string),

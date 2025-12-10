@@ -253,6 +253,8 @@ export interface ProductResponse {
     name: string;
     description: string | undefined;
     category: ProductCategory;
+    subCategoryId: string | undefined;
+    subCategoryName: string | undefined;
     price: number;
     priceUnit: WeightUnit;
     priceUnitAmount: number;
@@ -278,6 +280,7 @@ export interface CreateProductPayload {
     name: string;
     description?: string;
     category: ProductCategory;
+    subCategoryId?: string;
     price: number;
     priceUnit: WeightUnit;
     priceUnitAmount: number;
@@ -296,6 +299,9 @@ export async function createProduct(
         formData.append("description", payload.description);
     }
     formData.append("category", payload.category);
+    if (payload.subCategoryId) {
+        formData.append("subCategoryId", payload.subCategoryId);
+    }
     formData.append("price", payload.price.toString());
     formData.append("priceUnit", payload.priceUnit);
     formData.append("priceUnitAmount", payload.priceUnitAmount.toString());
@@ -368,3 +374,128 @@ export async function getAllProducts(): Promise<ProductListResponse> {
 
     return response.json();
 }
+
+// Sub-Category API Types
+export interface SubCategoryResponse {
+    id: string;
+    storeId: string;
+    name: string;
+    isOwner: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface SubCategoryListResponse {
+    message: string;
+    data: SubCategoryResponse[];
+}
+
+interface CreateSubCategoryResponse {
+    message: string;
+    data: SubCategoryResponse;
+}
+
+export async function getAllSubCategories(accessToken?: string): Promise<SubCategoryListResponse> {
+    const headers: Record<string, string> = {};
+    if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/sub-categories`, {
+        method: "GET",
+        headers,
+    });
+
+    if (!response.ok) {
+        throw new Error("Gagal mengambil data sub-kategori");
+    }
+
+    return response.json();
+}
+
+export async function getMySubCategories(accessToken: string): Promise<SubCategoryListResponse> {
+    const response = await fetch(`${API_BASE_URL}/sub-categories/my-sub-categories`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Gagal mengambil data sub-kategori");
+    }
+
+    return response.json();
+}
+
+export async function createSubCategory(
+    accessToken: string,
+    name: string
+): Promise<CreateSubCategoryResponse> {
+    const response = await fetch(`${API_BASE_URL}/sub-categories`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ name }),
+    });
+
+    if (!response.ok) {
+        const errorData: ApiError = await response.json();
+
+        if (response.status === 409) {
+            throw new Error("Sub-kategori dengan nama ini sudah ada.");
+        }
+
+        if (response.status === 403) {
+            throw new Error("Buka toko terlebih dahulu untuk membuat sub-kategori.");
+        }
+
+        if (response.status === 400 && errorData.details?.fieldErrors) {
+            const fieldErrors = errorData.details.fieldErrors;
+            const firstError = Object.values(fieldErrors).flat()[0];
+            throw new Error(firstError || "Validasi gagal");
+        }
+
+        throw new Error(errorData.error || "Terjadi kesalahan. Silakan coba lagi.");
+    }
+
+    return response.json();
+}
+
+export async function updateSubCategory(
+    accessToken: string,
+    id: string,
+    name: string
+): Promise<CreateSubCategoryResponse> {
+    const response = await fetch(`${API_BASE_URL}/sub-categories/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ name }),
+    });
+
+    if (!response.ok) {
+        const errorData: ApiError = await response.json();
+
+        if (response.status === 409) {
+            throw new Error("Sub-kategori dengan nama ini sudah ada.");
+        }
+
+        if (response.status === 403 && errorData.error === "NOT_OWNER") {
+            throw new Error("Anda hanya bisa mengedit sub-kategori milik sendiri.");
+        }
+
+        if (response.status === 404) {
+            throw new Error("Sub-kategori tidak ditemukan.");
+        }
+
+        throw new Error(errorData.error || "Terjadi kesalahan. Silakan coba lagi.");
+    }
+
+    return response.json();
+}
+

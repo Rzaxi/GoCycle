@@ -7,7 +7,8 @@ import {
     IconClipboardList,
     IconWallet,
     IconLogout,
-    IconBuildingStore
+    IconBuildingStore,
+    IconTag
 } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 
@@ -17,6 +18,7 @@ export default function SellerSidebar() {
     const menuItems = [
         { icon: IconLayoutDashboard, label: "Dashboard", href: "/seller/dashboard" },
         { icon: IconPackage, label: "Produk Saya", href: "/seller/products" },
+        { icon: IconTag, label: "Sub-Kategori", href: "/seller/sub-categories" },
         { icon: IconClipboardList, label: "Pesanan", href: "/seller/orders" },
         { icon: IconWallet, label: "Keuangan", href: "/seller/finance" },
     ];
@@ -38,8 +40,8 @@ export default function SellerSidebar() {
                             key={item.label}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive
-                                    ? "bg-emerald-50 text-emerald-700"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                ? "bg-emerald-50 text-emerald-700"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 }`}
                         >
                             <item.icon size={20} />

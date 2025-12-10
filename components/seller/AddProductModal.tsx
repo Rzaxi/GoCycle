@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { IconX, IconPhoto, IconPackage, IconRecycle, IconUpload, IconTrash } from "@tabler/icons-react";
+import { IconX, IconPhoto, IconPackage, IconRecycle, IconUpload, IconTrash, IconTag, IconChevronDown, IconExternalLink } from "@tabler/icons-react";
 import { createProductAction } from "@/lib/product-actions";
-import { ProductResponse } from "@/lib/api";
+import { getAllSubCategoriesAction } from "@/lib/sub-category-actions";
+import { ProductResponse, SubCategoryResponse } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 interface AddProductModalProps {
     isOpen: boolean;
@@ -40,6 +42,28 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string>("");
+
+    // Sub-category state
+    const [subCategories, setSubCategories] = useState<SubCategoryResponse[]>([]);
+    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string>("");
+    const [isLoadingSubCategories, setIsLoadingSubCategories] = useState(false);
+    const [subCategoryDropdownOpen, setSubCategoryDropdownOpen] = useState(false);
+    const router = useRouter();
+
+    // Fetch sub-categories when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            const fetchSubCategories = async () => {
+                setIsLoadingSubCategories(true);
+                const result = await getAllSubCategoriesAction();
+                if (result.success && result.data) {
+                    setSubCategories(result.data);
+                }
+                setIsLoadingSubCategories(false);
+            };
+            fetchSubCategories();
+        }
+    }, [isOpen]);
 
     // Allowed image formats
     const ALLOWED_FORMATS = [".jpg", ".jpeg", ".png", ".webp"];
@@ -82,6 +106,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
         setImageFile(null);
         setImagePreview("");
         setImageError("");
+        setSelectedSubCategoryId("");
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -176,6 +201,9 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
         formData.append("priceUnitAmount", priceUnitAmount.toString());
         formData.append("stock", stock.toString());
         formData.append("stockUnit", stockUnit);
+        if (selectedSubCategoryId) {
+            formData.append("subCategoryId", selectedSubCategoryId);
+        }
         formData.append("image", imageFile);
 
         try {
@@ -450,6 +478,95 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     {stockValidationError && (
                                         <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 font-medium">
                                             ⚠️ {stockValidationError}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Sub-Category Dropdown */}
+                                <div className="relative">
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        Sub-Kategori
+                                    </label>
+                                    {isLoadingSubCategories ? (
+                                        <div className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-400 flex items-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-gray-300 border-t-emerald-500 rounded-full animate-spin"></div>
+                                            Memuat sub-kategori...
+                                        </div>
+                                    ) : subCategories.length === 0 ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                onClose();
+                                                router.push("/seller/sub-categories");
+                                            }}
+                                            className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 font-medium flex items-center justify-center gap-2 hover:bg-amber-100 transition-colors"
+                                        >
+                                            <IconTag size={18} />
+                                            Belum ada sub-kategori. Klik untuk membuat.
+                                            <IconExternalLink size={16} />
+                                        </button>
+                                    ) : (
+                                        <div className="relative">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSubCategoryDropdownOpen(!subCategoryDropdownOpen)}
+                                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-left flex items-center justify-between hover:border-emerald-300 transition-colors"
+                                            >
+                                                <span className={selectedSubCategoryId ? "text-gray-900" : "text-gray-400"}>
+                                                    {selectedSubCategoryId
+                                                        ? subCategories.find(sc => sc.id === selectedSubCategoryId)?.name
+                                                        : "Pilih sub-kategori (opsional)"}
+                                                </span>
+                                                <IconChevronDown size={18} className={`text-gray-400 transition-transform ${subCategoryDropdownOpen ? "rotate-180" : ""}`} />
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {subCategoryDropdownOpen && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto"
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setSelectedSubCategoryId("");
+                                                                setSubCategoryDropdownOpen(false);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-gray-400 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                                                        >
+                                                            Tidak ada sub-kategori
+                                                        </button>
+                                                        {subCategories.map((sc) => (
+                                                            <button
+                                                                key={sc.id}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setSelectedSubCategoryId(sc.id);
+                                                                    setSubCategoryDropdownOpen(false);
+                                                                }}
+                                                                className={`w-full px-4 py-3 text-left hover:bg-emerald-50 transition-colors flex items-center gap-2 ${selectedSubCategoryId === sc.id ? "bg-emerald-50 text-emerald-700" : "text-gray-700"
+                                                                    }`}
+                                                            >
+                                                                <IconTag size={16} className="text-emerald-500" />
+                                                                {sc.name}
+                                                            </button>
+                                                        ))}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                onClose();
+                                                                router.push("/seller/sub-categories");
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-emerald-600 hover:bg-emerald-50 transition-colors border-t border-gray-100 flex items-center gap-2 font-medium"
+                                                        >
+                                                            <IconTag size={16} />
+                                                            + Tambah Sub-Kategori Baru
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
                                     )}
                                 </div>

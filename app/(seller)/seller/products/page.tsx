@@ -20,6 +20,7 @@ interface DisplayProduct {
     price: string;
     stock: string;
     category: string;
+    subCategory: string;
     status: "Aktif" | "Stok Habis" | "Arsip";
     image: string;
 }
@@ -58,6 +59,7 @@ export default function SellerProductsPage() {
             price: displayPrice,
             stock: displayStock,
             category: product.category,
+            subCategory: product.subCategoryName || "-",
             status: product.stock > 0 ? "Aktif" : "Stok Habis",
             image: product.imageUrl,
         };
@@ -164,6 +166,7 @@ export default function SellerProductsPage() {
                                     <th className="px-6 py-4">Harga Satuan</th>
                                     <th className="px-6 py-4">Stok</th>
                                     <th className="px-6 py-4">Kategori</th>
+                                    <th className="px-6 py-4">Sub-Kategori</th>
                                     <th className="px-6 py-4">Status</th>
                                     <th className="px-6 py-4 text-right">Aksi</th>
                                 </tr>
@@ -191,13 +194,16 @@ export default function SellerProductsPage() {
                                         <td className="px-6 py-4 text-gray-600">{product.stock}</td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-md text-xs font-medium border ${product.category === "Kerajinan"
-                                                    ? "bg-purple-50 text-purple-600 border-purple-200"
-                                                    : product.category === "Bahan Baku"
-                                                        ? "bg-amber-50 text-amber-600 border-amber-200"
-                                                        : "bg-gray-100 text-gray-600 border-gray-200"
+                                                ? "bg-purple-50 text-purple-600 border-purple-200"
+                                                : product.category === "Bahan Baku"
+                                                    ? "bg-amber-50 text-amber-600 border-amber-200"
+                                                    : "bg-gray-100 text-gray-600 border-gray-200"
                                                 }`}>
                                                 {product.category}
                                             </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-600 text-sm">
+                                            {product.subCategory}
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${product.status === "Aktif" ? "bg-green-50 text-green-600 border border-green-100" :
