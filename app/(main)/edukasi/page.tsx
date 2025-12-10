@@ -311,22 +311,7 @@ export default function Edukasi() {
             <EdukasiContent />
 
             {/* AI Assistant Floating Button */}
-            <motion.a
-                href="/edukasi/ask-ai"
-                initial={{ scale: 0, rotate: 180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                whileHover={{ scale: 1.1, rotate: -10 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-4 border-white/20 backdrop-blur-sm group cursor-pointer"
-            >
-                <IconRobot size={32} />
-                <span className="absolute right-full mr-4 bg-white text-gray-800 px-4 py-2 rounded-xl shadow-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    Tanya Gocycle AI
-                    <div className="absolute top-1/2 -right-1 -mt-1 w-2 h-2 bg-white rotate-45"></div>
-                </span>
-                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 border-2 border-white rounded-full animate-bounce"></span>
-            </motion.a>
+
 
         </div>
     );

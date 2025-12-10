@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar/Navbar";
 import Footer from "@/components/layout/Footer/Footer";
+import { AIFloatingButton } from "@/components/ui/ai-ask/AIFloatingButton";
 
 export default function MainLayout({
   children,
@@ -13,6 +14,7 @@ export default function MainLayout({
         {children}
       </main>
       <Footer />
+      <AIFloatingButton />
     </div>
   );
 }
