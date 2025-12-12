@@ -26,19 +26,6 @@ const categories = [
 
 export default function Marketplace() {
     const [activeCategory, setActiveCategory] = useState("all");
-<<<<<<< HEAD
-    const [searchQuery, setSearchQuery] = useState("");
-    const [activeTab, setActiveTab] = useState("all"); // Added for potential tab tracking if needed, but looks like activeCategory is the main one. Let's stick to activeCategory.
-
-    // Correcting the state based on existing code:
-    // existing: const [activeCategory, setActiveCategory] = useState("all");
-
-    const filteredProducts = allProducts.filter(p => {
-        const matchesCategory = activeCategory === "all" || p.category === activeCategory;
-        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
-    });
-=======
     const [products, setProducts] = useState<ProductResponse[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -60,7 +47,6 @@ export default function Marketplace() {
         const tags = ["Best Seller", "New", null, "High Demand", null, "Limited", null, "Organic"];
         return tags[index % tags.length];
     };
->>>>>>> 796376959b4aa86af661595075b5b7380423a7b5
 
     const placeholders = [
         "Cari botol plastik bekas...",
@@ -70,15 +56,16 @@ export default function Marketplace() {
     ];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+        console.log(e.target.value);
     };
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log("submitted");
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-emerald-100 overflow-x-hidden">
+        <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-emerald-100">
 
             {/* 1. HERO SECTION - CENTERED STACKED STYLE */}
             <section className="relative pt-40 pb-16 px-4 sm:px-8 lg:px-16 overflow-hidden">
@@ -101,7 +88,14 @@ export default function Marketplace() {
                         Marketplace kurasi pertama di Indonesia untuk produk daur ulang berkualitas tinggi dan bahan baku limbah terpercaya.
                     </p>
 
-
+                    {/* Search Bar - Centered */}
+                    <div className="w-full max-w-xl relative z-20 mb-16">
+                        <PlaceholdersAndVanishInput
+                            placeholders={placeholders}
+                            onChange={handleChange}
+                            onSubmit={onSubmit}
+                        />
+                    </div>
 
                     {/* Visual Hero - Full Width Card */}
                     <div className="relative w-full h-[400px] md:h-[600px] rounded-[3rem] overflow-hidden group shadow-2xl shadow-emerald-900/20">
@@ -195,143 +189,60 @@ export default function Marketplace() {
                 </div>
             </section>
 
-            {/* 2. CATEGORY NAVIGATION - RESPONSIVE (DESKTOP / MOBILE) */}
-            <div className="sticky top-6 z-40 pb-8 pointer-events-none">
+            {/* 2. CATEGORY NAVIGATION - FLOATING MODERN TABS */}
+            <div className="sticky top-6 z-40 transition-all duration-300 pointer-events-none pb-8">
+                <div className="max-w-fit mx-auto px-2">
+                    <div className="bg-white/80 backdrop-blur-xl border border-gray-200/50 shadow-xl shadow-gray-200/40 rounded-full p-1.5 pointer-events-auto flex items-center gap-1">
 
-                {/* --- DESKTOP VIEW (Combined Pill) --- */}
-                <div className="hidden lg:flex justify-center pointer-events-auto transition-all duration-300">
-                    <div className="bg-white/80 backdrop-blur-xl border border-gray-200/50 shadow-xl shadow-gray-200/40 rounded-full p-2 flex items-center gap-2">
-                        {/* Search Bar */}
-                        <div className="w-[450px]">
-                            <PlaceholdersAndVanishInput
-                                placeholders={placeholders}
-                                onChange={handleChange}
-                                onSubmit={onSubmit}
-                                className="shadow-none bg-transparent border border-gray-100"
-                            />
-                        </div>
-                        <div className="w-px h-8 bg-gray-200 mx-1 flex-shrink-0"></div>
                         {/* Categories */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                            {categories.map(cat => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => setActiveCategory(cat.id)}
-                                    className={`relative flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap ${activeCategory === cat.id ? "text-gray-900" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"}`}
-                                >
-                                    {activeCategory === cat.id && (
-                                        <motion.div
-                                            layoutId="activeTabDesktop"
-                                            className="absolute inset-0 bg-white rounded-full shadow-sm border border-gray-100"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                        />
-                                    )}
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        <span className={activeCategory === cat.id ? "text-[#2E8B57]" : "text-gray-400"}><cat.icon size={18} /></span>
-                                        {cat.label}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                        <div className="w-px h-6 bg-gray-200 mx-2 flex-shrink-0"></div>
-                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors flex-shrink-0">
-                            <IconFilter size={18} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* --- MOBILE VIEW (Stacked) --- */}
-                <div className="flex lg:hidden flex-col gap-3 px-4 pointer-events-auto">
-                    {/* Row 1: Search Bar (Full Width) */}
-                    <div className="w-full">
-                        <PlaceholdersAndVanishInput
-                            placeholders={placeholders}
-                            onChange={handleChange}
-                            onSubmit={onSubmit}
-                            className="bg-white/90 backdrop-blur-md shadow-lg shadow-gray-200/20 border border-gray-100 w-full"
-                        />
-                    </div>
-
-                    {/* Row 2: Categories (Scrollable) */}
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4">
-                        {/* Filter Button (Left aligned for easy access or Right? Let's put inline) */}
-                        <button className="flex-shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white shadow-md border border-gray-100 text-gray-600 hover:bg-gray-50 flex">
-                            <IconFilter size={20} />
-                        </button>
-
-                        <div className="h-8 w-px bg-transparent flex-shrink-0"></div>
-
                         {categories.map(cat => (
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`
-                                    relative flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap shadow-sm border
+                                    relative flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-300
                                     ${activeCategory === cat.id
-                                        ? "bg-white border-emerald-100 text-gray-900 shadow-emerald-500/10"
-                                        : "bg-white/60 border-transparent text-gray-500 hover:bg-white"
+                                        ? "text-gray-900"
+                                        : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                                     }
                                 `}
                             >
-                                <span className={activeCategory === cat.id ? "text-[#2E8B57]" : "text-gray-400"}>
-                                    <cat.icon size={18} />
+                                {activeCategory === cat.id && (
+                                    <motion.div
+                                        layoutId="activeTab"
+                                        className="absolute inset-0 bg-white rounded-full shadow-sm border border-gray-100"
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
+                                )}
+                                <span className="relative z-10 flex items-center gap-2">
+                                    <span className={activeCategory === cat.id ? "text-[#2E8B57]" : "text-gray-400"}>
+                                        <cat.icon size={18} />
+                                    </span>
+                                    {cat.label}
                                 </span>
-                                {cat.label}
                             </button>
                         ))}
+
+                        <div className="w-px h-6 bg-gray-200 mx-2"></div>
+
+                        {/* Filter Button (Compact) */}
+                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors">
+                            <IconFilter size={18} />
+                        </button>
+
                     </div>
                 </div>
-
             </div>
 
             {/* 4. MAIN PRODUCT GRID - CLEAN & MODERN */}
             <section className="pb-32 px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto">
                 <div className="flex items-end justify-between mb-12">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                            {searchQuery ? `Hasil Pencarian: "${searchQuery}"` : "Koleksi Terbaru"}
-                        </h2>
-                        <p className="text-gray-500">
-                            {searchQuery ? `Menampilkan ${filteredProducts.length} produk ditemukan` : "Temukan barang unik yang diselamatkan dari TPA."}
-                        </p>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Koleksi Terbaru</h2>
+                        <p className="text-gray-500">Temukan barang unik yang diselamatkan dari TPA.</p>
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <AnimatePresence>
-                        {filteredProducts.map((product, index) => (
-                            <motion.div
-                                key={product.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ delay: index * 0.05, duration: 0.5 }}
-                                className="h-full"
-                            >
-                                <ProductCard
-                                    id={product.id}
-                                    name={product.name}
-                                    price={product.price}
-                                    rating={product.rating}
-                                    seller={product.seller}
-                                    image={product.image}
-                                    tag={product.tag}
-                                    category={product.category}
-                                />
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                    {filteredProducts.length === 0 && (
-                        <div className="col-span-full py-20 text-center text-gray-400">
-                            <IconSearch className="mx-auto mb-4 text-gray-300" size={48} />
-                            <p className="text-lg font-medium">Tidak ada produk yang cocok dengan pencarianmu.</p>
-                            <button onClick={() => setSearchQuery("")} className="mt-4 text-emerald-600 hover:underline">Reset Pencarian</button>
-                        </div>
-                    )}
-                </div>
-=======
                 {isLoading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {[...Array(8)].map((_, index) => (
@@ -370,7 +281,6 @@ export default function Marketplace() {
                         </AnimatePresence>
                     </div>
                 )}
->>>>>>> 796376959b4aa86af661595075b5b7380423a7b5
             </section>
 
         </div>
