@@ -93,6 +93,48 @@ export async function loginUser(
     return response.json();
 }
 
+// === REFRESH TOKEN ===
+export type ForwardHeaders = { userAgent?: string; forwardedFor?: string };
+
+interface RefreshTokenResponse {
+    message: string;
+    data: {
+        accessToken: string;
+        accessTokenExpiresAt: string;
+        refreshToken?: string;
+        refreshTokenExpiresAt?: string;
+    };
+}
+
+export async function refreshAccessToken(
+    refreshToken: string,
+    forwardHeaders?: ForwardHeaders
+): Promise<RefreshTokenResponse> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    };
+
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!response.ok) {
+        throw new Error("TOKEN_REFRESH_FAILED");
+    }
+
+    return response.json();
+}
+
 // === REGISTER ===
 export async function registerUser(payload: RegisterPayload): Promise<RegisterResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -304,7 +346,8 @@ export interface CreateProductPayload {
 
 export async function createProduct(
     accessToken: string,
-    payload: CreateProductPayload
+    payload: CreateProductPayload,
+    forwardHeaders?: ForwardHeaders
 ): Promise<CreateProductResponse> {
     const formData = new FormData();
     formData.append("name", payload.name);
@@ -320,11 +363,20 @@ export async function createProduct(
     formData.append("stockUnit", payload.stockUnit);
     formData.append("image", payload.image);
 
+    const headers: Record<string, string> = {
+        "Authorization": `Bearer ${accessToken}`,
+    };
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
         body: formData,
     });
 
@@ -359,12 +411,24 @@ export async function createProduct(
     return response.json();
 }
 
-export async function getMyProducts(accessToken: string): Promise<ProductListResponse> {
+export async function getMyProducts(
+    accessToken: string,
+    forwardHeaders?: ForwardHeaders
+): Promise<ProductListResponse> {
+    const headers: Record<string, string> = {
+        "Authorization": `Bearer ${accessToken}`,
+    };
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/products/my-products`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
     });
 
     if (!response.ok) {
@@ -406,10 +470,20 @@ interface CreateSubCategoryResponse {
     data: SubCategoryResponse;
 }
 
-export async function getAllSubCategories(accessToken?: string): Promise<SubCategoryListResponse> {
+export async function getAllSubCategories(
+    accessToken?: string,
+    forwardHeaders?: ForwardHeaders
+): Promise<SubCategoryListResponse> {
     const headers: Record<string, string> = {};
     if (accessToken) {
         headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
     }
 
     const response = await fetch(`${API_BASE_URL}/sub-categories`, {
@@ -424,12 +498,24 @@ export async function getAllSubCategories(accessToken?: string): Promise<SubCate
     return response.json();
 }
 
-export async function getMySubCategories(accessToken: string): Promise<SubCategoryListResponse> {
+export async function getMySubCategories(
+    accessToken: string,
+    forwardHeaders?: ForwardHeaders
+): Promise<SubCategoryListResponse> {
+    const headers: Record<string, string> = {
+        "Authorization": `Bearer ${accessToken}`,
+    };
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/sub-categories/my-sub-categories`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
     });
 
     if (!response.ok) {
@@ -441,14 +527,24 @@ export async function getMySubCategories(accessToken: string): Promise<SubCatego
 
 export async function createSubCategory(
     accessToken: string,
-    name: string
+    name: string,
+    forwardHeaders?: ForwardHeaders
 ): Promise<CreateSubCategoryResponse> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`,
+    };
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/sub-categories`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
         body: JSON.stringify({ name }),
     });
 
@@ -478,14 +574,24 @@ export async function createSubCategory(
 export async function updateSubCategory(
     accessToken: string,
     id: string,
-    name: string
+    name: string,
+    forwardHeaders?: ForwardHeaders
 ): Promise<CreateSubCategoryResponse> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`,
+    };
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/sub-categories/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
         body: JSON.stringify({ name }),
     });
 

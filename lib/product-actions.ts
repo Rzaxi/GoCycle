@@ -1,15 +1,14 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { createProduct, getMyProducts, CreateProductPayload, ProductResponse } from "./api";
+import { getValidAccessToken, getForwardHeaders } from "./auth-actions";
 
 export async function createProductAction(formData: FormData): Promise<{
     success: boolean;
     data?: ProductResponse;
     error?: string;
 }> {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
+    const accessToken = await getValidAccessToken();
 
     if (!accessToken) {
         return { success: false, error: "Silakan login terlebih dahulu." };
@@ -40,7 +39,8 @@ export async function createProductAction(formData: FormData): Promise<{
             image: imageFile,
         };
 
-        const response = await createProduct(accessToken, payload);
+        const forwardHeaders = await getForwardHeaders();
+        const response = await createProduct(accessToken, payload, forwardHeaders);
         return { success: true, data: response.data };
     } catch (error: any) {
         return { success: false, error: error.message || "Terjadi kesalahan." };
@@ -52,15 +52,15 @@ export async function getMyProductsAction(): Promise<{
     data?: ProductResponse[];
     error?: string;
 }> {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
+    const accessToken = await getValidAccessToken();
 
     if (!accessToken) {
         return { success: false, error: "Silakan login terlebih dahulu." };
     }
 
     try {
-        const response = await getMyProducts(accessToken);
+        const forwardHeaders = await getForwardHeaders();
+        const response = await getMyProducts(accessToken, forwardHeaders);
         return { success: true, data: response.data };
     } catch (error: any) {
         return { success: false, error: error.message || "Terjadi kesalahan." };

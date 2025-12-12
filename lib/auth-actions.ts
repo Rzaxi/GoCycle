@@ -76,12 +76,24 @@ export async function logoutAction(): Promise<void> {
     const cookieStore = await cookies();
     const headersList = await headers();
 
-    const accessToken = cookieStore.get("accessToken")?.value;
+    let accessToken = cookieStore.get("accessToken")?.value;
     const refreshToken = cookieStore.get("refreshToken")?.value;
 
     // Get browser headers to forward to backend
     const userAgent = headersList.get("user-agent") || undefined;
     const forwardedFor = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
+
+    // If access token is missing but refresh token exists, try to refresh first
+    if (!accessToken && refreshToken) {
+        try {
+            const { refreshAccessToken } = await import("@/lib/api");
+            const response = await refreshAccessToken(refreshToken, { userAgent, forwardedFor });
+            accessToken = response.data.accessToken;
+        } catch (error) {
+            // Refresh failed, continue with local logout
+            console.error("Token refresh for logout failed:", error);
+        }
+    }
 
     // Call backend logout API if we have tokens
     if (accessToken && refreshToken) {
@@ -150,4 +162,68 @@ export async function refreshUserInfo(): Promise<{ success: boolean; error?: str
         console.error("Failed to refresh user info:", error);
         return { success: false, error: "Failed to refresh user info" };
     }
+}
+
+export async function refreshTokens(): Promise<{ success: boolean; accessToken?: string }> {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refreshToken")?.value;
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const forwardedFor = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
+
+    if (!refreshToken) {
+        return { success: false };
+    }
+
+    try {
+        const { refreshAccessToken } = await import("@/lib/api");
+        const response = await refreshAccessToken(refreshToken, { userAgent, forwardedFor });
+        const data = response.data;
+
+        // Update access token cookie
+        cookieStore.set("accessToken", data.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            expires: new Date(data.accessTokenExpiresAt),
+        });
+
+        // Update refresh token if rotated
+        if (data.refreshToken && data.refreshTokenExpiresAt) {
+            cookieStore.set("refreshToken", data.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                expires: new Date(data.refreshTokenExpiresAt),
+            });
+        }
+
+        return { success: true, accessToken: data.accessToken };
+    } catch (error) {
+        console.error("Token refresh failed:", error);
+        return { success: false };
+    }
+}
+
+export async function getValidAccessToken(): Promise<string | null> {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+
+    if (accessToken) {
+        return accessToken;
+    }
+
+    // Access token missing or expired, try to refresh
+    const result = await refreshTokens();
+    return result.accessToken || null;
+}
+
+export async function getForwardHeaders(): Promise<{ userAgent?: string; forwardedFor?: string }> {
+    const headersList = await headers();
+    return {
+        userAgent: headersList.get("user-agent") || undefined,
+        forwardedFor: headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined,
+    };
 }
