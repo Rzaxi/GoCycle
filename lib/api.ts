@@ -266,7 +266,7 @@ export interface ProductResponse {
     name: string;
     description: string | undefined;
     category: ProductCategory;
-    subCategoryId: string | undefined;
+    subCategoryId: string;
     subCategoryName: string | undefined;
     price: number;
     priceUnit: WeightUnit;
@@ -293,7 +293,7 @@ export interface CreateProductPayload {
     name: string;
     description?: string;
     category: ProductCategory;
-    subCategoryId?: string;
+    subCategoryId: string;
     price: number;
     priceUnit: WeightUnit;
     priceUnitAmount: number;
@@ -312,9 +312,7 @@ export async function createProduct(
         formData.append("description", payload.description);
     }
     formData.append("category", payload.category);
-    if (payload.subCategoryId) {
-        formData.append("subCategoryId", payload.subCategoryId);
-    }
+    formData.append("subCategoryId", payload.subCategoryId);
     formData.append("price", payload.price.toString());
     formData.append("priceUnit", payload.priceUnit);
     formData.append("priceUnitAmount", payload.priceUnitAmount.toString());

@@ -22,11 +22,16 @@ export async function createProductAction(formData: FormData): Promise<{
             return { success: false, error: "Foto produk wajib diupload." };
         }
 
+        const subCategoryId = formData.get("subCategoryId") as string;
+        if (!subCategoryId) {
+            return { success: false, error: "Sub-Kategori wajib dipilih." };
+        }
+
         const payload: CreateProductPayload = {
             name: formData.get("name") as string,
             description: formData.get("description") as string || undefined,
             category: formData.get("category") as "Kerajinan" | "Bahan Baku",
-            subCategoryId: formData.get("subCategoryId") as string || undefined,
+            subCategoryId,
             price: parseInt(formData.get("price") as string),
             priceUnit: formData.get("priceUnit") as "g" | "kg",
             priceUnitAmount: parseInt(formData.get("priceUnitAmount") as string),

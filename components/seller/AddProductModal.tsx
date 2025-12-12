@@ -191,6 +191,12 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
             return;
         }
 
+        if (!selectedSubCategoryId) {
+            setSubmitError("Sub-Kategori wajib dipilih.");
+            setIsSubmitting(false);
+            return;
+        }
+
         // Create FormData for server action
         const formData = new FormData();
         formData.append("name", name);
@@ -201,9 +207,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
         formData.append("priceUnitAmount", priceUnitAmount.toString());
         formData.append("stock", stock.toString());
         formData.append("stockUnit", stockUnit);
-        if (selectedSubCategoryId) {
-            formData.append("subCategoryId", selectedSubCategoryId);
-        }
+        formData.append("subCategoryId", selectedSubCategoryId);
         formData.append("image", imageFile);
 
         try {
@@ -385,26 +389,6 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* Display converted price info for Bahan Baku */}
-                                    {category === "Bahan Baku" && price > 0 && priceUnitAmount > 0 && (
-                                        <div className="mt-2 text-sm text-gray-500">
-                                            {priceUnit === "g" ? (
-                                                <>
-                                                    Harga akan ditampilkan: <span className="font-bold text-emerald-600">
-                                                        Rp {(price * 1000 / priceUnitAmount).toLocaleString("id-ID")}/kg
-                                                    </span>
-                                                    {" "}({(priceUnitAmount / 1000).toFixed(priceUnitAmount >= 100 ? 1 : 2)} kg)
-                                                </>
-                                            ) : (
-                                                <>
-                                                    Harga ditampilkan: <span className="font-bold text-emerald-600">
-                                                        Rp {(price / priceUnitAmount).toLocaleString("id-ID")}/kg
-                                                    </span>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
                                 </div>
 
                                 {/* Stock Section */}
@@ -631,13 +615,6 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     )}
                                 </div>
 
-                                {/* Submit Error */}
-                                {submitError && (
-                                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 font-medium">
-                                        ⚠️ {submitError}
-                                    </div>
-                                )}
-
                                 {/* Actions */}
                                 <div className="flex gap-3 pt-4 border-t border-gray-100">
                                     <button
@@ -652,7 +629,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     </button>
                                     <button
                                         type="submit"
-                                        disabled={isSubmitting || !name || price <= 0 || stock <= 0 || !imageFile || !!stockValidationError}
+                                        disabled={isSubmitting || !name || price <= 0 || stock <= 0 || !imageFile || !selectedSubCategoryId || !!stockValidationError}
                                         className="flex-1 py-3 px-6 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {isSubmitting ? (
