@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import {
     IconBulb,
@@ -157,7 +158,13 @@ export function EdukasiContent() {
                                             key={tip.id}
                                             className={`group relative overflow-hidden rounded-[32px] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-[500px]' : 'h-[240px]'}`}
                                         >
-                                            <img src={tip.image} alt={tip.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <Image
+                                                src={tip.image}
+                                                alt={tip.title}
+                                                fill
+                                                sizes={index === 0 ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"}
+                                                className="absolute inset-0 object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
@@ -202,7 +209,13 @@ export function EdukasiContent() {
                                             key={diy.id}
                                             className={`group relative overflow-hidden rounded-[32px] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-[500px]' : 'h-[240px]'}`}
                                         >
-                                            <img src={diy.image} alt={diy.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <Image
+                                                src={diy.image}
+                                                alt={diy.title}
+                                                fill
+                                                sizes={index === 0 ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"}
+                                                className="absolute inset-0 object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
@@ -257,7 +270,13 @@ export function EdukasiContent() {
                                             key={news.id}
                                             className={`group relative overflow-hidden rounded-[32px] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-[500px]' : 'h-[240px]'}`}
                                         >
-                                            <img src={news.image} alt={news.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <Image
+                                                src={news.image}
+                                                alt={news.title}
+                                                fill
+                                                sizes={index === 0 ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"}
+                                                className="absolute inset-0 object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 

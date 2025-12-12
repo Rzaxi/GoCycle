@@ -45,7 +45,7 @@ export default function TentangKami() {
                         transition={{ duration: 0.6 }}
                         className="inline-block mb-6 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm tracking-wide border border-emerald-200"
                     >
-                        KENALAN YUK! 👋
+                        TENTANG KAMI
                     </motion.div>
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
@@ -79,23 +79,17 @@ export default function TentangKami() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                         whileHover={{ y: -10 }}
-                        className="relative group overflow-hidden bg-white p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20"
+                        className="relative group overflow-hidden bg-white p-10 rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-emerald-100 transition-all duration-500"
                     >
-                        {/* Gradient Border Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
                         <div className="relative z-10">
-                            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                            <div className="w-20 h-20 rounded-3xl bg-emerald-50 flex items-center justify-center mb-8 group-hover:bg-emerald-100 transition-colors duration-500">
                                 <IconTelescope size={40} className="text-emerald-600" stroke={1.5} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 mb-6 tracking-tight">Visi Kami</h2>
-                            <p className="text-lg text-gray-600 leading-relaxed font-medium">
+                            <p className="text-lg text-gray-500 leading-relaxed font-medium">
                                 Menjadi ekosistem digital nomor satu di Indonesia yang mengubah cara pandang dan perilaku masyarakat terhadap pengelolaan limbah menuju ekonomi sirkular.
                             </p>
                         </div>
-
-                        {/* Decorative Blob */}
-                        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors duration-500"></div>
                     </motion.div>
 
                     {/* Misi Card */}
@@ -105,13 +99,10 @@ export default function TentangKami() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                         whileHover={{ y: -10 }}
-                        className="relative group overflow-hidden bg-white p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20"
+                        className="relative group overflow-hidden bg-white p-10 rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-teal-100 transition-all duration-500"
                     >
-                        {/* Gradient Border Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
                         <div className="relative z-10">
-                            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-teal-100 to-teal-50 flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                            <div className="w-20 h-20 rounded-3xl bg-teal-50 flex items-center justify-center mb-8 group-hover:bg-teal-100 transition-colors duration-500">
                                 <IconRocket size={40} className="text-teal-600" stroke={1.5} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 mb-6 tracking-tight">Misi Kami</h2>
@@ -121,7 +112,7 @@ export default function TentangKami() {
                                     "Digitalisasi bank sampah dan pengepul.",
                                     "Menciptakan pasar produk daur ulang yang adil."
                                 ].map((item, index) => (
-                                    <li key={index} className="flex items-center gap-4 text-gray-600 font-medium group/item">
+                                    <li key={index} className="flex items-center gap-4 text-gray-500 font-medium group/item">
                                         <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center group-hover/item:bg-teal-100 transition-colors">
                                             <div className="w-2.5 h-2.5 rounded-full bg-teal-500"></div>
                                         </div>
@@ -130,9 +121,6 @@ export default function TentangKami() {
                                 ))}
                             </ul>
                         </div>
-
-                        {/* Decorative Blob */}
-                        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl group-hover:bg-teal-500/10 transition-colors duration-500"></div>
                     </motion.div>
                 </div>
             </div>
@@ -155,10 +143,10 @@ export default function TentangKami() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <span className="text-emerald-600 font-bold tracking-wider text-sm uppercase mb-3 block">Orang-Orang Hebat</span>
-                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">The Visionaries</h2>
+                            <span className="text-emerald-600 font-bold tracking-wider text-sm uppercase mb-3 block">Profesional & Berdedikasi</span>
+                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">Tim Gocycle</h2>
                             <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
-                                Bukan sekadar tim, tapi keluarga yang berdedikasi untuk satu tujuan: Bumi yang lebih hijau.
+                                Kami adalah tim yang berkomitmen penuh untuk menghadirkan inovasi teknologi dalam pengelolaan lingkungan yang berkelanjutan.
                             </p>
                         </motion.div>
                     </div>
@@ -181,7 +169,7 @@ export default function TentangKami() {
                                             <img
                                                 src={member.image}
                                                 alt={member.name}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                             />
 
                                             {/* Modern Glass Overlay at Bottom */}
@@ -214,17 +202,10 @@ export default function TentangKami() {
                 </div>
             </div>
 
-            {/* 4. FAQ SECTION */}
-            <div className="py-24 bg-white">
-                <div className="max-w-7xl mx-auto px-4">
-                    <FAQ />
-                </div>
-            </div>
-
-            {/* 5. KONTAK KAMI */}
+            {/* 4. KONTAK KAMI */}
             <div className="py-24 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="bg-white rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100">
+                    <div className="bg-white rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden border border-gray-100">
                         <div className="grid lg:grid-cols-5 min-h-[600px]">
                             <div className="lg:col-span-2 bg-gray-900 p-12 text-white flex flex-col justify-between relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -310,6 +291,13 @@ export default function TentangKami() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* 5. FAQ SECTION */}
+            <div className="py-24 bg-white">
+                <div className="max-w-7xl mx-auto px-4">
+                    <FAQ />
                 </div>
             </div>
         </div>

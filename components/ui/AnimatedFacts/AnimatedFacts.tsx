@@ -1,6 +1,7 @@
 "use client";
 
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
@@ -82,11 +83,13 @@ export const AnimatedFacts = ({
                                     }}
                                     className="absolute inset-0 origin-bottom"
                                 >
-                                    <img
+                                    <Image
                                         src={fact.src}
                                         alt={fact.name}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 50vw"
                                         draggable={false}
-                                        className="h-full w-full rounded-3xl object-cover object-center shadow-2xl"
+                                        className="rounded-3xl object-cover object-center shadow-2xl"
                                     />
                                 </motion.div>
                             ))}

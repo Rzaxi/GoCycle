@@ -1,10 +1,22 @@
 "use client";
 
 import { motion } from "motion/react";
-import { IconArrowRight, IconLeaf, IconRecycle, IconPlant, IconRobot, IconSparkles, IconSearch, IconScan, IconMessageChatbot, IconCamera, IconSend } from "@tabler/icons-react";
+import Image from "next/image";
+import { IconArrowRight, IconLeaf, IconRecycle, IconPlant, IconRobot, IconSparkles, IconSearch, IconScan, IconMessageChatbot, IconCamera, IconSend, IconBulb, IconVideo } from "@tabler/icons-react";
+
 import { AnimatedFacts } from "@/components/ui/AnimatedFacts/AnimatedFacts";
-import { Timeline } from "@/components/ui/Timeline/Timeline";
-import { EdukasiContent } from "@/components/sections/EdukasiContent/EdukasiContent";
+import dynamic from "next/dynamic";
+
+
+const Timeline = dynamic(() => import("@/components/ui/Timeline/Timeline").then((mod) => mod.Timeline), {
+    loading: () => <div className="h-screen w-full bg-white animate-pulse" />,
+    ssr: false
+});
+
+const EdukasiContent = dynamic(() => import("@/components/sections/EdukasiContent/EdukasiContent").then((mod) => mod.EdukasiContent), {
+    loading: () => <div className="h-96 w-full bg-gray-50 animate-pulse" />,
+    ssr: false
+});
 
 const factsData = [
     {
@@ -36,16 +48,24 @@ const timelineData = [
                     Langkah pertama dimulai dari rumah. Memisahkan sampah organik, anorganik, dan residu adalah kunci utama dalam rantai daur ulang.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    <img
-                        src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=500&q=80"
-                        alt="sorting waste"
-                        className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    />
-                    <img
-                        src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=500&q=80"
-                        alt="recycling bins"
-                        className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    />
+                    <div className="relative h-20 md:h-44 lg:h-60 w-full rounded-lg overflow-hidden shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+                        <Image
+                            src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=500&q=80"
+                            alt="sorting waste"
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover"
+                        />
+                    </div>
+                    <div className="relative h-20 md:h-44 lg:h-60 w-full rounded-lg overflow-hidden shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+                        <Image
+                            src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=500&q=80"
+                            alt="recycling bins"
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </div>
         ),
@@ -58,11 +78,15 @@ const timelineData = [
                     Sampah yang terpilah dikumpulkan oleh petugas kebersihan atau bank sampah. Di sini, nilai ekonomi sampah mulai terlihat.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    <img
-                        src="https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?w=500&q=80"
-                        alt="waste collection"
-                        className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    />
+                    <div className="relative h-20 md:h-44 lg:h-60 w-full rounded-lg overflow-hidden shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+                        <Image
+                            src="https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?w=500&q=80"
+                            alt="waste collection"
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </div>
         ),
@@ -75,11 +99,15 @@ const timelineData = [
                     Sampah diolah menjadi bahan baku baru. Plastik dicacah menjadi bijih plastik, kertas didaur ulang menjadi bubur kertas.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    <img
-                        src="/foto/Pengolahan sampah.jpg"
-                        alt="recycling plant"
-                        className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    />
+                    <div className="relative h-20 md:h-44 lg:h-60 w-full rounded-lg overflow-hidden shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+                        <Image
+                            src="/foto/Pengolahan sampah.jpg"
+                            alt="recycling plant"
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </div>
         ),
@@ -92,11 +120,15 @@ const timelineData = [
                     Hasil daur ulang lahir kembali menjadi produk baru yang bermanfaat, menutup siklus ekonomi sirkular.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    <img
-                        src="https://img.freepik.com/free-photo/eco-bag-mockup_1108-287.jpg"
-                        alt="recycled product"
-                        className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-                    />
+                    <div className="relative h-20 md:h-44 lg:h-60 w-full rounded-lg overflow-hidden shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+                        <Image
+                            src="https://img.freepik.com/free-photo/eco-bag-mockup_1108-287.jpg"
+                            alt="recycled product"
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </div>
         ),
@@ -110,10 +142,12 @@ export default function Edukasi() {
             {/* 1. HERO SECTION */}
             <div className="relative h-[100vh] flex items-center justify-center overflow-hidden sticky top-0 z-0">
                 <div className="absolute inset-0 z-0">
-                    <img
+                    <Image
                         src="/foto/edukasi_hero.jpg"
                         alt="Masalah Sampah Lingkungan"
-                        className="w-full h-full object-cover"
+                        fill
+                        priority
+                        className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/60"></div>
                 </div>
@@ -163,147 +197,105 @@ export default function Edukasi() {
                 <Timeline data={timelineData} />
             </div>
 
-            {/* 4. AI SPOTLIGHT SECTION - APP SHOWCASE (INDONESIAN) */}
-            <div className="relative py-32 bg-slate-50 overflow-hidden">
+            {/* 4. AI SPOTLIGHT SECTION - "GOGO" SHOWCASE */}
+            <div className="relative py-32 overflow-hidden bg-white">
+                {/* Clean Background Decoration */}
+                <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-emerald-50/80 blur-[120px] rounded-full -translate-y-1/2 -translate-x-1/4"></div>
+                <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-50/80 blur-[100px] rounded-full translate-y-1/3 translate-x-1/4"></div>
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="grid lg:grid-cols-2 gap-20 items-center">
 
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
-
-                        {/* LEFT: Copywriting (Indonesian) */}
+                        {/* LEFT: Mascot (Gogo) - CLEAN */}
                         <motion.div
-                            initial={{ opacity: 0, x: -30 }}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="relative h-[600px] flex items-center justify-center order-2 lg:order-1"
+                        >
+                            {/* Decorative Elements */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/30 to-blue-50/30 rounded-[3rem] rotate-3 scale-95 border border-white/50"></div>
+                            <div className="absolute inset-0 bg-white/40 backdrop-blur-sm rounded-[3rem] -rotate-2 scale-95 shadow-2xl shadow-emerald-100/50"></div>
+
+                            {/* Main Circle */}
+                            <div className="absolute w-[450px] h-[450px] bg-gradient-to-b from-emerald-50 to-white rounded-full border border-white shadow-inner z-0"></div>
+
+                            {/* MASCOT IMAGE */}
+                            <div className="relative z-10 w-[420px] md:w-[520px] h-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 ease-in-out">
+                                <Image
+                                    src="/foto/SayHai.png"
+                                    alt="Gogo Mascot"
+                                    fill
+                                    priority
+                                    className="object-contain"
+                                />
+                            </div>
+                        </motion.div>
+
+                        {/* RIGHT: Copywriting & Features */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
-                            className="space-y-8"
+                            className="space-y-8 order-1 lg:order-2"
                         >
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-600 rounded-full text-sm font-bold uppercase tracking-wider">
-                                <IconSparkles size={16} /> Gocycle AI Assistant
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-100">
+                                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                                Meet Your New Bestie
                             </div>
 
-                            <h2 className="text-5xl font-extrabold text-gray-900 leading-tight">
-                                Bingung Memilih <br />
-                                <span className="text-emerald-600">Tempat Sampah?</span>
+                            <h2 className="text-5xl md:text-7xl font-black text-gray-900 leading-none tracking-tight">
+                                Kenalan sama <br />
+                                <span className="text-emerald-600">Gogo.</span>
                             </h2>
 
-                            <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-                                Foto sampahmu, dan biarkan AI kami memberitahu jawabannya. Mulai dari identifikasi jenis plastik hingga ide daur ulang kreatif, semua ada di genggamanmu.
+                            <p className="text-xl text-gray-500 leading-relaxed max-w-lg font-normal">
+                                Asisten pintar yang siap bantuin kamu pilah sampah. Cukup foto, Gogo langsung kasih tau:
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <a href="/edukasi/ask-ai" className="flex items-center justify-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-emerald-600 transition-colors">
-                                    <IconMessageChatbot size={20} /> Mulai Chat
+                            {/* Feature List */}
+                            <div className="space-y-6 pt-2">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0">
+                                        <IconScan size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">Cek Jenis Sampah</h3>
+                                        <p className="text-gray-500 leading-relaxed">Bingung ini organik atau anorganik? Foto aja, Gogo tau jawabannya.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">
+                                        <IconBulb size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">Ide DIY Project</h3>
+                                        <p className="text-gray-500 leading-relaxed">Punya botol bekas? Gogo kasih ide kerajinan tangan yang keren.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
+                                        <IconVideo size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">Rekomendasi Video</h3>
+                                        <p className="text-gray-500 leading-relaxed">Tonton tutorial cara daur ulang langsung pilihan Gogo.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6">
+                                <a href="/edukasi/ask-ai" className="group flex w-fit items-center justify-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-full font-bold shadow-xl shadow-gray-200 transition-all hover:scale-105 active:scale-95">
+                                    <IconMessageChatbot size={20} /> Chat Sekarang
                                 </a>
-                                <button className="flex items-center justify-center gap-3 bg-white text-gray-900 px-8 py-4 rounded-xl font-bold border border-gray-200 shadow-sm hover:border-emerald-200 transition-colors">
-                                    <IconCamera size={20} /> Coba Scan
-                                </button>
                             </div>
-
-                            <div className="pt-8 border-t border-gray-200 flex items-center gap-8">
-                                <div>
-                                    <div className="text-3xl font-black text-gray-900">24/7</div>
-                                    <div className="text-sm text-gray-500 font-medium">Selalu Aktif</div>
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-black text-gray-900">99%</div>
-                                    <div className="text-sm text-gray-500 font-medium">Akurasi Deteksi</div>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* RIGHT: Chat App Visualization */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="relative"
-                        >
-                            <div className="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] md:w-[350px] shadow-xl flex flex-col overflow-hidden">
-                                <div className="h-[32px] bg-gray-800 rounded-t-[2rem] absolute top-0 w-full z-20 flex justify-center">
-                                    <div className="h-[18px] w-[100px] bg-black rounded-b-[1rem]"></div>
-                                </div>
-
-                                {/* Screen Content */}
-                                <div className="flex-1 bg-white overflow-hidden flex flex-col relative pt-10">
-
-                                    {/* App Header */}
-                                    <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                                                <IconRobot size={18} />
-                                            </div>
-                                            <div>
-                                                <div className="text-sm font-bold text-gray-900">Gocycle AI</div>
-                                                <div className="text-[10px] text-emerald-500 flex items-center gap-1">
-                                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Chat Area */}
-                                    <div className="flex-1 p-4 space-y-4 overflow-hidden relative">
-                                        <div className="absolute inset-0 bg-gray-50 opacity-50"></div>
-
-                                        {/* AI Msg */}
-                                        <div className="flex gap-2 relative z-10">
-                                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex-shrink-0 flex items-center justify-center text-white mt-1">
-                                                <IconRobot size={14} />
-                                            </div>
-                                            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-gray-600 max-w-[85%] border border-gray-100">
-                                                Halo! Ada yang bisa saya bantu hari ini? 🌿
-                                            </div>
-                                        </div>
-
-                                        {/* User Msg */}
-                                        <div className="flex gap-2 flex-row-reverse relative z-10">
-                                            <div className="w-6 h-6 rounded-full bg-gray-200 flex-shrink-0 mt-1"></div>
-                                            <div className="bg-emerald-600 p-3 rounded-2xl rounded-tr-none shadow-sm text-xs text-white max-w-[85%]">
-                                                Botol plastik ini masuk kmn ya?
-                                            </div>
-                                        </div>
-
-                                        {/* AI Reply with Image */}
-                                        <div className="flex gap-2 relative z-10">
-                                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex-shrink-0 flex items-center justify-center text-white mt-1">
-                                                <IconRobot size={14} />
-                                            </div>
-                                            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-gray-600 max-w-[85%] border border-gray-100">
-                                                <p className="mb-2">Itu jenis <strong>PET (1)</strong>. Masukkan ke tong sampah <span className="text-yellow-500 font-bold">KUNING</span> (Anorganik). 💛</p>
-                                                <div className="rounded-lg bg-yellow-50 p-2 flex items-center gap-2 border border-yellow-100">
-                                                    <IconRecycle size={16} className="text-yellow-600" />
-                                                    <span className="font-bold text-yellow-700 text-[10px]">Daur Ulang!</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Input Area */}
-                                    <div className="p-3 bg-white border-t border-gray-100">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-                                                <IconCamera size={16} />
-                                            </div>
-                                            <div className="flex-1 h-8 bg-gray-100 rounded-full px-3 text-xs flex items-center text-gray-400">
-                                                Ketik pesan...
-                                            </div>
-                                            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-                                                <IconSend size={16} />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {/* Decorative Blobs */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] bg-emerald-400/20 blur-3xl -z-10 rounded-full"></div>
                         </motion.div>
 
                     </div>
-
-
                 </div>
             </div>
 
