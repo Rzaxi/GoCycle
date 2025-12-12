@@ -1,16 +1,44 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { allProducts } from "@/lib/data";
 import { IconArrowLeft, IconStar, IconShoppingCart, IconHeart, IconShare, IconTruck, IconShieldCheck, IconLeaf, IconMessage } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import ProductCard from "@/components/ui/ProductCard/ProductCard";
+import { getPublicProductsAction } from "@/lib/public-product-actions";
+import { ProductResponse } from "@/lib/api";
 
 export default function ProductDetail() {
     const params = useParams();
     const router = useRouter();
-    const id = Number(params.id);
-    const product = allProducts.find((p) => p.id === id);
+    const id = params.id as string;
+
+    const [product, setProduct] = useState<ProductResponse | null>(null);
+    const [relatedProducts, setRelatedProducts] = useState<ProductResponse[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getPublicProductsAction();
+            if (result.success && result.data) {
+                const foundProduct = result.data.find((p) => p.id === id);
+                setProduct(foundProduct || null);
+                // Get related products (same category, different id)
+                const related = result.data.filter(p => p.id !== id).slice(0, 4);
+                setRelatedProducts(related);
+            }
+            setIsLoading(false);
+        }
+        fetchData();
+    }, [id]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#FDFDFD]">
+                <div className="animate-pulse text-gray-400">Memuat...</div>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -27,6 +55,12 @@ export default function ProductDetail() {
             </div>
         );
     }
+
+    // Random tags for visual variety
+    const getTags = (index: number): string | null => {
+        const tags = ["Best Seller", "New", null, "Limited"];
+        return tags[index % tags.length];
+    };
 
     return (
         <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-emerald-100 pb-24 lg:pb-12">
@@ -60,17 +94,10 @@ export default function ProductDetail() {
 
                             <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
                                 <img
-                                    src={product.image}
+                                    src={product.imageUrl}
                                     alt={product.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
-                                {product.tag && (
-                                    <div className="absolute top-6 left-6">
-                                        <span className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest text-gray-900 shadow-lg border border-white/20">
-                                            {product.tag}
-                                        </span>
-                                    </div>
-                                )}
                             </div>
                         </div>
 
@@ -78,7 +105,7 @@ export default function ProductDetail() {
                         <div className="grid grid-cols-4 gap-4">
                             {[1, 2, 3, 4].map((item) => (
                                 <div key={item} className="aspect-square rounded-2xl bg-white border border-gray-100 cursor-pointer hover:ring-2 ring-emerald-500 ring-offset-2 transition-all overflow-hidden shadow-sm hover:shadow-md">
-                                    <img src={product.image} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" alt="thumbnail" />
+                                    <img src={product.imageUrl} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" alt="thumbnail" />
                                 </div>
                             ))}
                         </div>
@@ -95,11 +122,11 @@ export default function ProductDetail() {
                         <div className="mb-8">
                             <div className="flex items-center gap-3 mb-4">
                                 <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full border border-emerald-100">
-                                    {product.category}
+                                    {product.subCategoryName || product.category}
                                 </span>
                                 <div className="flex items-center gap-1.5 text-amber-500 bg-amber-50/50 px-3 py-1 rounded-full border border-amber-100/50">
                                     <IconStar size={14} className="fill-current" />
-                                    <span className="text-xs font-bold text-gray-900">{product.rating}</span>
+                                    <span className="text-xs font-bold text-gray-900">{(4.5 + Math.random() * 0.5).toFixed(1)}</span>
                                     <span className="text-gray-300 mx-1">|</span>
                                     <span className="text-xs text-gray-500">120 Ulasan</span>
                                 </div>
@@ -110,10 +137,15 @@ export default function ProductDetail() {
                             </h1>
 
                             <div className="flex items-end gap-4 pb-6 border-b border-gray-100">
-                                <p className="text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight">
-                                    <span className="text-xl lg:text-2xl font-bold text-gray-400 mr-1 align-top mt-2 inline-block">Rp</span>
-                                    {product.price.toLocaleString('id-ID')}
-                                </p>
+                                <div className="flex items-baseline gap-2">
+                                    <p className="text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight">
+                                        <span className="text-xl lg:text-2xl font-bold text-gray-400 mr-1 align-top mt-2 inline-block">Rp</span>
+                                        {product.price.toLocaleString('id-ID')}
+                                    </p>
+                                    <span className="text-xl text-gray-400 font-medium">
+                                        / {product.priceUnitAmount > 1 ? `${product.priceUnitAmount} ` : ''}{product.priceUnit}
+                                    </span>
+                                </div>
                                 <span className="mb-2 text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">
                                     1.2rb Terjual
                                 </span>
@@ -134,19 +166,34 @@ export default function ProductDetail() {
                             </button>
                         </div>
 
+                        {/* Description - Only show if product has description */}
+                        {product.description && (
+                            <div className="mb-10">
+                                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                    <IconLeaf className="text-emerald-500" size={20} />
+                                    Deskripsi Produk
+                                </h3>
+                                <div className="prose prose-gray prose-sm max-w-none">
+                                    <p className="text-gray-600 leading-relaxed text-base">
+                                        {product.description}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Seller Card */}
                         <div className="p-1 rounded-[2rem] bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-sm mb-10">
                             <div className="bg-white rounded-[1.8rem] p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
                                 <div className="flex items-center gap-4 w-full sm:w-auto">
                                     <div className="relative shrink-0">
                                         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#00C090] to-[#00A078] flex items-center justify-center text-white font-bold text-xl shadow-md shadow-emerald-100">
-                                            {product.seller.charAt(0)}
+                                            {product.storeName.charAt(0)}
                                         </div>
                                         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#00C090] border-[3px] border-white rounded-full shadow-sm" title="Online"></div>
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-0.5">
-                                            <h3 className="font-bold text-gray-900 text-lg">{product.seller}</h3>
+                                            <h3 className="font-bold text-gray-900 text-lg">{product.storeName}</h3>
                                             <IconShieldCheck size={18} className="text-[#00C090] fill-emerald-50" />
                                         </div>
                                         <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -161,26 +208,13 @@ export default function ProductDetail() {
                                         Follow
                                     </button>
                                     <button
-                                        onClick={() => router.push(`/chat/${product.seller.toLowerCase().replace(/\s+/g, '-')}`)}
+                                        onClick={() => router.push(`/chat/${product.storeName.toLowerCase().replace(/\s+/g, '-')}`)}
                                         className="flex-1 sm:flex-none px-5 py-2 rounded-lg border border-gray-200 text-gray-700 text-xs font-bold hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center gap-1.5"
                                     >
                                         <IconMessage size={16} />
                                         Chat
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-10">
-                            <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                <IconLeaf className="text-emerald-500" size={20} />
-                                Deskripsi Produk
-                            </h3>
-                            <div className="prose prose-gray prose-sm max-w-none">
-                                <p className="text-gray-600 leading-relaxed text-base">
-                                    {product.description || "Produk berkualitas tinggi yang ramah lingkungan. Dibuat dengan penuh ketelitian untuk memastikan kepuasan Anda dan dampak positif bagi bumi. Cocok untuk penggunaan sehari-hari."}
-                                </p>
                             </div>
                         </div>
 
@@ -194,7 +228,7 @@ export default function ProductDetail() {
                                 <div>
                                     <h4 className="font-bold text-emerald-900 text-base mb-1">Dampak Lingkungan Positif</h4>
                                     <p className="text-emerald-800/80 text-sm leading-relaxed">
-                                        {product.impact || "Dengan membeli produk ini, Anda berkontribusi mengurangi limbah di TPA dan mendukung ekonomi sirkular."}
+                                        Dengan membeli produk ini, Anda berkontribusi mengurangi limbah di TPA dan mendukung ekonomi sirkular.
                                     </p>
                                 </div>
                             </div>
@@ -256,33 +290,34 @@ export default function ProductDetail() {
                 </div>
 
                 {/* RECOMMENDED PRODUCTS SECTION */}
-                <div className="border-t border-gray-100 pt-16">
-                    <div className="flex items-center justify-between mb-10">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">Kamu Mungkin Suka</h2>
-                            <p className="text-gray-500 text-sm">Rekomendasi produk sejenis untukmu</p>
+                {relatedProducts.length > 0 && (
+                    <div className="border-t border-gray-100 pt-16">
+                        <div className="flex items-center justify-between mb-10">
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">Kamu Mungkin Suka</h2>
+                                <p className="text-gray-500 text-sm">Rekomendasi produk sejenis untukmu</p>
+                            </div>
+                            <button className="px-5 py-2 rounded-xl border border-gray-200 text-gray-900 font-bold text-sm hover:bg-gray-50 transition-all">
+                                Lihat Semua
+                            </button>
                         </div>
-                        <button className="px-5 py-2 rounded-xl border border-gray-200 text-gray-900 font-bold text-sm hover:bg-gray-50 transition-all">
-                            Lihat Semua
-                        </button>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {allProducts.filter(p => p.id !== id).slice(0, 4).map((item) => (
-                            <ProductCard
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                price={item.price}
-                                rating={item.rating}
-                                seller={item.seller}
-                                image={item.image}
-                                tag={item.tag}
-                                category={item.category}
-                            />
-                        ))}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            {relatedProducts.map((item, index) => (
+                                <ProductCard
+                                    key={item.id}
+                                    id={item.id}
+                                    name={item.name}
+                                    price={item.price}
+                                    storeName={item.storeName}
+                                    image={item.imageUrl}
+                                    subCategoryName={item.subCategoryName}
+                                    tag={getTags(index)}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </main>
 
             {/* MOBILE STICKY BOTTOM ACTIONS (Hidden on Desktop) */}

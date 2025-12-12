@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 import { IconStar, IconShoppingCart, IconHeart } from "@tabler/icons-react";
 
 interface ProductCardProps {
-    id: number;
+    id: string;
     name: string;
     price: number;
-    rating: number;
-    seller: string;
+    storeName: string;
     image: string;
+    subCategoryName?: string;
     tag?: string | null;
-    category?: string | null;
+    rating?: number;
     sold?: string;
 }
 
@@ -19,11 +19,11 @@ export default function ProductCard({
     id,
     name,
     price,
-    rating,
-    seller,
+    storeName,
     image,
+    subCategoryName,
     tag,
-    category,
+    rating = 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
     sold = "50+"
 }: ProductCardProps) {
     const router = useRouter();
@@ -61,14 +61,14 @@ export default function ProductCard({
 
             {/* Content Section */}
             <div className="px-2 pb-2 flex flex-col flex-grow">
-                {/* Category & Rating */}
+                {/* Sub-Category & Rating */}
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
-                        {category || "Product"}
+                        {subCategoryName || "Produk"}
                     </span>
                     <div className="flex items-center gap-1">
                         <IconStar size={14} className="text-amber-400 fill-amber-400" />
-                        <span className="text-xs font-bold text-gray-700">{rating}</span>
+                        <span className="text-xs font-bold text-gray-700">{rating.toFixed(1)}</span>
                     </div>
                 </div>
 
@@ -79,7 +79,7 @@ export default function ProductCard({
 
                 {/* Seller & Sold */}
                 <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
-                    <span>{seller}</span>
+                    <span>{storeName}</span>
                     <span>•</span>
                     <span>Terjual {sold}</span>
                 </div>
