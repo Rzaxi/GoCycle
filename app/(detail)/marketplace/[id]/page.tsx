@@ -112,7 +112,7 @@ export default function ProductDetail() {
                             <div className="flex items-end gap-4 pb-6 border-b border-gray-100">
                                 <p className="text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight">
                                     <span className="text-xl lg:text-2xl font-bold text-gray-400 mr-1 align-top mt-2 inline-block">Rp</span>
-                                    {(product.price / 1000).toFixed(0)}k
+                                    {product.price.toLocaleString('id-ID')}
                                 </p>
                                 <span className="mb-2 text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">
                                     1.2rb Terjual

@@ -27,7 +27,7 @@ export default function NotFound() {
                             className="w-20 h-20 md:w-28 md:h-28 relative mx-2"
                         >
                             <img
-                                src="/foto/logo_navbar.png"
+                                src="/foto/Group 31.png"
                                 alt="0"
                                 className="w-full h-full object-contain"
                             />
@@ -76,7 +76,7 @@ export default function NotFound() {
                     </motion.div>
                 </div>
 
-                {/* Right Side: Giant Confused AI Mascot */}
+                {/* Right Side: SayGoodbye Image with Question Marks */}
                 <div className="flex justify-center order-1 md:order-2">
                     <div className="relative w-64 h-64 md:w-80 md:h-80">
                         {/* Floating Question Marks */}
@@ -95,40 +95,18 @@ export default function NotFound() {
                             ?
                         </motion.div>
 
-                        {/* The Body (Main Image) */}
+                        {/* The Main Image - SayGoodbye */}
                         <motion.div
                             animate={{ y: [0, -10, 0] }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                             className="relative z-20 w-full h-full"
                         >
                             <img
-                                src="/foto/ai_ask.png"
-                                alt="Confused AI"
+                                src="/foto/SayGoodbye.png"
+                                alt="Say Goodbye"
                                 className="w-full h-full object-contain drop-shadow-2xl"
                             />
                         </motion.div>
-
-                        {/* Arms - Styled to match */}
-                        <motion.div
-                            animate={{ rotate: [0, 10, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-1/2 -left-8 w-16 h-5 bg-emerald-500 rounded-full origin-right z-10"
-                        ></motion.div>
-                        <div className="absolute top-1/2 -left-10 w-7 h-7 bg-emerald-600 rounded-full z-10 border-2 border-emerald-400"></div> {/* Hand L */}
-
-                        <motion.div
-                            animate={{ rotate: [0, -10, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                            className="absolute top-1/2 -right-8 w-16 h-5 bg-emerald-500 rounded-full origin-left z-10"
-                        ></motion.div>
-                        <div className="absolute top-1/2 -right-10 w-7 h-7 bg-emerald-600 rounded-full z-10 border-2 border-emerald-400"></div> {/* Hand R */}
-
-                        {/* Legs */}
-                        <div className="absolute bottom-4 left-1/3 w-5 h-20 bg-emerald-500 rounded-full z-10"></div>
-                        <div className="absolute -bottom-2 left-[28%] w-12 h-6 bg-emerald-600 rounded-full z-10 border-2 border-emerald-400"></div> {/* Foot L */}
-
-                        <div className="absolute bottom-4 right-1/3 w-5 h-20 bg-emerald-500 rounded-full z-10"></div>
-                        <div className="absolute -bottom-2 right-[28%] w-12 h-6 bg-emerald-600 rounded-full z-10 border-2 border-emerald-400"></div> {/* Foot R */}
 
                         {/* Shadow */}
                         <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-40 h-4 bg-black/10 rounded-full blur-sm"></div>

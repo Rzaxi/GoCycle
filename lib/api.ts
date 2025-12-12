@@ -65,6 +65,7 @@ export async function loginUser(
     }
     if (forwardHeaders?.forwardedFor) {
         headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
     }
 
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -124,14 +125,26 @@ export async function registerUser(payload: RegisterPayload): Promise<RegisterRe
 // === LOGOUT ===
 export async function logoutUser(
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
+    forwardHeaders?: { userAgent?: string; forwardedFor?: string }
 ): Promise<{ message: string }> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`,
+    };
+
+    // Forward browser headers for accurate device detection
+    if (forwardHeaders?.userAgent) {
+        headers["User-Agent"] = forwardHeaders.userAgent;
+    }
+    if (forwardHeaders?.forwardedFor) {
+        headers["X-Forwarded-For"] = forwardHeaders.forwardedFor;
+        headers["X-Real-IP"] = forwardHeaders.forwardedFor.split(",")[0].trim();
+    }
+
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        },
+        headers,
         body: JSON.stringify({ refreshToken }),
     });
 

@@ -90,7 +90,7 @@ export default function ProductCard({
                         <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Harga</span>
                         <p className="font-black text-xl text-gray-900">
                             <span className="text-sm font-bold text-emerald-600 mr-0.5">Rp</span>
-                            {(price / 1000).toFixed(0)}k
+                            {price.toLocaleString('id-ID')}
                         </p>
                     </div>
 

@@ -178,8 +178,8 @@ export default function ProfilePage() {
                                     </p>
                                 </div>
                                 <div className="flex-shrink-0">
-                                    <button className="bg-white text-emerald-900 px-8 py-3 rounded-full font-bold shadow-xl hover:bg-emerald-50 transition-colors flex items-center gap-2 group-hover:scale-105 transform duration-300">
-                                        Buka Toko Gratis <IconChevronRight size={18} />
+                                    <button className="bg-white text-emerald-900 px-8 py-3 rounded-full font-bold shadow-xl hover:bg-emerald-50 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all ease-out flex items-center gap-2 group-hover:scale-105 group-hover:translate-x-1 transform duration-500">
+                                        Buka Toko Gratis <IconChevronRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
                                     </button>
                                 </div>
                             </div>
@@ -193,31 +193,85 @@ export default function ProfilePage() {
                         transition={{ delay: 0.2 }}
                         className="bg-white rounded-3xl shadow-sm border border-gray-100 min-h-[500px] p-8"
                     >
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-2xl font-bold text-gray-900">Pesanan Saya</h3>
-                            <a href="#" className="text-sm font-bold text-emerald-600 hover:text-emerald-700">Lihat Semua Riwayat</a>
-                        </div>
+                        {/* Orders Tab */}
+                        {activeTab === "orders" && (
+                            <>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="text-2xl font-bold text-gray-900">Pesanan Saya</h3>
+                                    <a href="#" className="text-sm font-bold text-emerald-600 hover:text-emerald-700">Lihat Semua Riwayat</a>
+                                </div>
 
-                        {/* Order Status Tabs */}
-                        <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-2">
-                            {["Semua", "Belum Bayar", "Dikemas", "Dikirim", "Selesai"].map((status, idx) => (
-                                <button key={status} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${idx === 0 ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
-                                    {status}
-                                </button>
-                            ))}
-                        </div>
+                                {/* Order Status Tabs */}
+                                <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-2">
+                                    {["Semua", "Belum Bayar", "Dikemas", "Dikirim", "Selesai"].map((status, idx) => (
+                                        <button key={status} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${idx === 0 ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                                            {status}
+                                        </button>
+                                    ))}
+                                </div>
 
-                        {/* Empty State Mockup */}
-                        <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50/50">
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-300 mb-4">
-                                <IconShoppingBag size={40} />
-                            </div>
-                            <h4 className="text-lg font-bold text-gray-900 mb-2">Belum ada pesanan</h4>
-                            <p className="text-gray-500 max-w-sm mb-6">Kamu belum melakukan transaksi apapun. Yuk mulai jelajahi marketplace!</p>
-                            <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20">
-                                Belanja Sekarang
-                            </button>
-                        </div>
+                                {/* Empty State Mockup */}
+                                <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50/50">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                                        <IconShoppingBag size={40} />
+                                    </div>
+                                    <h4 className="text-lg font-bold text-gray-900 mb-2">Belum ada pesanan</h4>
+                                    <p className="text-gray-500 max-w-sm mb-6">Kamu belum melakukan transaksi apapun. Yuk mulai jelajahi marketplace!</p>
+                                    <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20">
+                                        Belanja Sekarang
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Address Tab */}
+                        {activeTab === "address" && (
+                            <>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="text-2xl font-bold text-gray-900">Alamat Pengiriman</h3>
+                                    <button className="text-sm font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                                        <span>+ Tambah Alamat</span>
+                                    </button>
+                                </div>
+
+                                {/* Empty State */}
+                                <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50/50">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                                        <IconMapPin size={40} />
+                                    </div>
+                                    <h4 className="text-lg font-bold text-gray-900 mb-2">Belum ada alamat</h4>
+                                    <p className="text-gray-500 max-w-sm mb-6">Tambahkan alamat pengiriman untuk mempermudah checkout.</p>
+                                    <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20">
+                                        Tambah Alamat
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Wishlist Tab */}
+                        {activeTab === "wishlist" && (
+                            <>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="text-2xl font-bold text-gray-900">Wishlist Saya</h3>
+                                    <span className="text-sm text-gray-500">0 produk</span>
+                                </div>
+
+                                {/* Empty State */}
+                                <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50/50">
+                                    <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-300 mb-4">
+                                        <IconHeart size={40} />
+                                    </div>
+                                    <h4 className="text-lg font-bold text-gray-900 mb-2">Wishlist masih kosong</h4>
+                                    <p className="text-gray-500 max-w-sm mb-6">Simpan produk favoritmu di sini agar mudah ditemukan nanti!</p>
+                                    <button
+                                        onClick={() => window.location.href = '/marketplace'}
+                                        className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20"
+                                    >
+                                        Jelajahi Marketplace
+                                    </button>
+                                </div>
+                            </>
+                        )}
 
                     </motion.div>
 

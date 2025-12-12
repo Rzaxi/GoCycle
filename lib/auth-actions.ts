@@ -74,15 +74,20 @@ export async function loginAction(formData: FormData): Promise<LoginActionResult
 
 export async function logoutAction(): Promise<void> {
     const cookieStore = await cookies();
+    const headersList = await headers();
 
     const accessToken = cookieStore.get("accessToken")?.value;
     const refreshToken = cookieStore.get("refreshToken")?.value;
+
+    // Get browser headers to forward to backend
+    const userAgent = headersList.get("user-agent") || undefined;
+    const forwardedFor = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
 
     // Call backend logout API if we have tokens
     if (accessToken && refreshToken) {
         try {
             const { logoutUser } = await import("@/lib/api");
-            await logoutUser(accessToken, refreshToken);
+            await logoutUser(accessToken, refreshToken, { userAgent, forwardedFor });
         } catch (error) {
             // Continue with local logout even if API call fails
             console.error("Logout API call failed:", error);

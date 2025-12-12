@@ -268,9 +268,9 @@ export const AIFloatingButton = () => {
                 whileHover={{ scale: 1.1, rotate: -10 }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-4 border-white/20 backdrop-blur-sm group cursor-pointer"
+                className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-20 h-20 bg-white text-emerald-600 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-4 border-emerald-500 group cursor-pointer"
             >
-                {isOpen ? <IconX size={32} /> : <img src="/foto/ai_ask.png" alt="AI" className="w-full h-full object-cover rounded-full" />}
+                {isOpen ? <IconX size={32} className="text-emerald-600" /> : <img src="/foto/ai_ask.png" alt="AI" className="w-14 h-14 object-cover rounded-full" />}
 
                 {!isOpen && (
                     <>
