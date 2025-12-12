@@ -298,13 +298,13 @@ export async function getMyStore(accessToken: string): Promise<StoreResponse | n
     return response.json();
 }
 
-// Product API Types
 type ProductCategory = "Kerajinan" | "Bahan Baku";
-type WeightUnit = "g" | "kg";
+type WeightUnit = "g" | "kg" | "pcs";
 
 export interface ProductResponse {
     id: string;
-    userId: string;
+    storeId: string;
+    storeName: string;
     name: string;
     description: string | undefined;
     category: ProductCategory;
@@ -438,8 +438,13 @@ export async function getMyProducts(
     return response.json();
 }
 
-export async function getAllProducts(): Promise<ProductListResponse> {
-    const response = await fetch(`${API_BASE_URL}/products`, {
+export async function getAllProducts(category?: string): Promise<ProductListResponse> {
+    let url = `${API_BASE_URL}/products`;
+    if (category) {
+        url += `?category=${encodeURIComponent(category)}`;
+    }
+
+    const response = await fetch(url, {
         method: "GET",
     });
 

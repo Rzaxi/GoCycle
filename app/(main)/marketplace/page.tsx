@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import {
     IconSearch,
-    IconShoppingCart,
-    IconStar,
     IconFilter,
-    IconHeart,
     IconRecycle,
     IconTools,
     IconTag,
@@ -17,16 +14,39 @@ import {
 } from "@tabler/icons-react";
 
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholder/placeholders-and-vanish-input";
-import { allProducts, categories } from "@/lib/data";
 import ProductCard from "@/components/ui/ProductCard/ProductCard";
+import { getPublicProductsAction } from "@/lib/public-product-actions";
+import { ProductResponse } from "@/lib/api";
+
+const categories = [
+    { id: "all", label: "Semua", icon: IconSearch },
+    { id: "Kerajinan", label: "Kerajinan", icon: IconTools },
+    { id: "Bahan Baku", label: "Bahan Baku", icon: IconRecycle },
+];
 
 export default function Marketplace() {
     const [activeCategory, setActiveCategory] = useState("all");
-    const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+    const [products, setProducts] = useState<ProductResponse[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const filteredProducts = activeCategory === "all"
-        ? allProducts
-        : allProducts.filter(p => p.category === activeCategory);
+    useEffect(() => {
+        async function fetchProducts() {
+            setIsLoading(true);
+            const categoryFilter = activeCategory === "all" ? undefined : activeCategory;
+            const result = await getPublicProductsAction(categoryFilter);
+            if (result.success && result.data) {
+                setProducts(result.data);
+            }
+            setIsLoading(false);
+        }
+        fetchProducts();
+    }, [activeCategory]);
+
+    // Random tags for visual variety
+    const getTags = (index: number): string | null => {
+        const tags = ["Best Seller", "New", null, "High Demand", null, "Limited", null, "Organic"];
+        return tags[index % tags.length];
+    };
 
     const placeholders = [
         "Cari botol plastik bekas...",
@@ -129,7 +149,7 @@ export default function Marketplace() {
                     <div className="md:col-span-8 bg-[#F4F5F7] rounded-[2.5rem] p-10 relative overflow-hidden group cursor-pointer border border-gray-100 hover:shadow-xl transition-all duration-500">
                         <div className="relative z-10 max-w-md h-full flex flex-col justify-center">
                             <span className="bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-gray-900 mb-6 w-fit">Pilihan Editor</span>
-                            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">Kursi Santai <br /> Ban Bekas</h3>
+                            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">Kursi Santai <br />Ban Bekas</h3>
                             <p className="text-gray-500 text-lg mb-8 line-clamp-2">Karya pengrajin lokal Yogyakarta. Tahan cuaca, ramah lingkungan, dan sangat nyaman untuk teras rumah.</p>
                             <button className="flex items-center gap-3 text-gray-900 font-bold group/btn w-fit">
                                 <span className="border-b-2 border-gray-900 pb-0.5 group-hover/btn:border-emerald-600 group-hover/btn:text-emerald-600 transition-colors">Lihat Detail Produk</span>
@@ -223,29 +243,44 @@ export default function Marketplace() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {filteredProducts.map((product, index) => (
-                        <motion.div
-                            key={product.id}
-                            layout
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05, duration: 0.5 }}
-                            className="h-full"
-                        >
-                            <ProductCard
-                                id={product.id}
-                                name={product.name}
-                                price={product.price}
-                                rating={product.rating}
-                                seller={product.seller}
-                                image={product.image}
-                                tag={product.tag}
-                                category={product.category}
-                            />
-                        </motion.div>
-                    ))}
-                </div>
+                {isLoading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {[...Array(8)].map((_, index) => (
+                            <div key={index} className="bg-gray-100 rounded-[2rem] h-[400px] animate-pulse" />
+                        ))}
+                    </div>
+                ) : products.length === 0 ? (
+                    <div className="text-center py-20 text-gray-500">
+                        <p className="text-xl">Belum ada produk untuk kategori ini</p>
+                        <p className="text-sm mt-2">Coba pilih kategori lain</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        <AnimatePresence mode="popLayout">
+                            {products.map((product, index) => (
+                                <motion.div
+                                    key={product.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ delay: index * 0.05, duration: 0.5 }}
+                                    className="h-full"
+                                >
+                                    <ProductCard
+                                        id={product.id}
+                                        name={product.name}
+                                        price={product.price}
+                                        storeName={product.storeName}
+                                        image={product.imageUrl}
+                                        subCategoryName={product.subCategoryName}
+                                        tag={getTags(index)}
+                                    />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                )}
             </section>
 
         </div>

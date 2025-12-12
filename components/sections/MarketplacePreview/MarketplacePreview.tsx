@@ -1,52 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { IconShoppingCart, IconStar, IconArrowRight } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import ProductCard from "@/components/ui/ProductCard/ProductCard";
-
-const products = [
-    {
-        id: 1,
-        name: "Sofa Ban Bekas",
-        price: 23000,
-        stock: 20,
-        rating: 4.7,
-        image: "https://img.freepik.com/free-photo/tire-chair-garden_1098-18572.jpg",
-        category: "Furniture",
-    },
-    {
-        id: 2,
-        name: "Tas Daur Ulang",
-        price: 45000,
-        stock: 15,
-        rating: 4.8,
-        image: "https://img.freepik.com/free-photo/eco-bag-mockup_1108-287.jpg",
-        category: "Fashion",
-    },
-    {
-        id: 3,
-        name: "Pot Bunga Botol",
-        price: 15000,
-        stock: 30,
-        rating: 4.5,
-        image: "https://img.freepik.com/free-photo/plastic-bottle-recycled-planter-diy-project_23-2149367255.jpg",
-        category: "Dekorasi",
-    },
-    {
-        id: 4,
-        name: "Lampu Hias Kertas",
-        price: 35000,
-        stock: 10,
-        rating: 4.9,
-        image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800",
-        category: "Dekorasi",
-    },
-];
+import { getPublicProductsAction } from "@/lib/public-product-actions";
+import { ProductResponse } from "@/lib/api";
 
 export default function MarketplacePreview() {
-    const [hoveredId, setHoveredId] = useState<number | null>(null);
+    const [products, setProducts] = useState<ProductResponse[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchProducts() {
+            const result = await getPublicProductsAction();
+            if (result.success && result.data) {
+                // Show max 4 products
+                setProducts(result.data.slice(0, 4));
+            }
+            setIsLoading(false);
+        }
+        fetchProducts();
+    }, []);
+
+    // Random tags for visual variety
+    const getTags = (index: number): string | null => {
+        const tags = ["Best Seller", "New", null, "Limited"];
+        return tags[index % tags.length];
+    };
 
     return (
         <section className="bg-gradient-to-br from-white via-green-50/30 to-white py-24 relative overflow-hidden">
@@ -92,26 +74,36 @@ export default function MarketplacePreview() {
 
                 {/* Products Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {products.map((product, index) => (
-                        <motion.div
-                            key={product.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
-                        >
-                            <ProductCard
-                                id={product.id}
-                                name={product.name}
-                                price={product.price}
-                                rating={product.rating}
-                                seller="Go Cycle Store"
-                                image={product.image}
-                                category={product.category}
-                                sold={`${product.stock}+`}
-                            />
-                        </motion.div>
-                    ))}
+                    {isLoading ? (
+                        // Skeleton loading
+                        [...Array(4)].map((_, index) => (
+                            <div key={index} className="bg-gray-100 rounded-[2rem] h-[400px] animate-pulse" />
+                        ))
+                    ) : products.length === 0 ? (
+                        <div className="col-span-4 text-center py-12 text-gray-500">
+                            Belum ada produk tersedia
+                        </div>
+                    ) : (
+                        products.map((product, index) => (
+                            <motion.div
+                                key={product.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <ProductCard
+                                    id={product.id}
+                                    name={product.name}
+                                    price={product.price}
+                                    storeName={product.storeName}
+                                    image={product.imageUrl}
+                                    subCategoryName={product.subCategoryName}
+                                    tag={getTags(index)}
+                                />
+                            </motion.div>
+                        ))
+                    )}
                 </div>
 
                 {/* View All CTA */}
